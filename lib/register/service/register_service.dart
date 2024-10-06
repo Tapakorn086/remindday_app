@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterService {
-  final String apiUrl = 'http://10.0.0.0.2:8080/api/register';
-  // final String apiUrl = 'http://192.168.1.105:8080/api/register';
+  // final String apiUrl = 'http://10.0.0.0.2:8080/api/register';
+  final String apiUrl = 'http://192.168.1.105:8080/api/register';
 
   Future<bool> register(String email, String password) async {
      debugPrint("START REGISTER");
-     debugPrint("email $debugPrint, password $password");
+     debugPrint("email $email, password $password");
     try {
       final response = await http.post(
         Uri.parse(apiUrl),

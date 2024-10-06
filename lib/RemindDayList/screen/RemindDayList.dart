@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; 
 import 'package:intl/intl.dart';
+import 'package:remindday_app/AddToDo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -157,7 +158,7 @@ class _RemindDayListScreenState extends State<RemindDayListScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddTaskScreen()),
+                    MaterialPageRoute(builder: (context) => const NoteRemindDayScreen(title: "asds")),
                   );
                 },
               ),

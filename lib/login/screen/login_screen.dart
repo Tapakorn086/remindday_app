@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remindday_app/register/screen/register_screen.dart';
 import '../controller/auth_controller.dart';
 import '../../group/screen/group_screen.dart';
 
@@ -63,16 +64,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                     if (success) {
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => GroupScreen()),
+                        MaterialPageRoute(builder: (context) => const GroupScreen()),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Login failed. Please try again.')),
+                        const SnackBar(
+                            content: Text('Login failed. Please try again.')),
                       );
                     }
                   }
                 },
                 child: const Text('Login'),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => RegisterScreen()),
+                  );
+                },
+                child: const Text('Don t have an account? Register'),
               ),
             ],
           ),

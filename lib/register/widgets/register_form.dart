@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../controller/register_controller.dart';
 
 class RegisterForm extends StatefulWidget {
-  final Function(bool) onRegisterResult;
+  final Function(bool, String) onRegisterResult;
 
   RegisterForm({required this.onRegisterResult});
 
@@ -15,6 +15,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final RegisterController _registerController = RegisterController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -59,16 +60,26 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                bool success = await _registerController.register(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-                widget.onRegisterResult(success);
-              }
-            },
-            child: Text('Register'),
+            onPressed: _isLoading
+                ? null
+                : () async {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      String result = await _registerController.register(
+                        _emailController.text,
+                        _passwordController.text,
+                      );
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      widget.onRegisterResult(result == "success", result);
+                    }
+                  },
+            child: _isLoading
+                ? CircularProgressIndicator(color: Colors.white)
+                : Text('Register'),
           ),
         ],
       ),

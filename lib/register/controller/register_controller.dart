@@ -1,14 +1,20 @@
+import 'package:flutter/material.dart';
 import '../service/register_service.dart';
 
 class RegisterController {
   final RegisterService _registerService = RegisterService();
 
-  Future<bool> register(String email, String password) async {
+  Future<String> register(String email, String password) async {
     try {
-      return await _registerService.register(email, password);
+      bool success = await _registerService.register(email, password);
+      if (success) {
+        return "success";
+      } else {
+        return "Registration failed. Please try again.";
+      }
     } catch (e) {
-      print('Registration error: $e');
-      return false;
+      debugPrint('Registration error: $e');
+      return "An error occurred. Please try again later.";
     }
   }
 }

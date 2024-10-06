@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:remindday_app/RemindDayList/screen/RemindDayList.dart';
 import 'group/screen/group_screen.dart';
-import 'login/screen/login_screen.dart';
-import 'login/service/auth_service.dart';
+import 'login/screens/login_screen.dart';
+import 'login/services/auth_service.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controller/register_controller.dart';
+import '../controllers/register_controller.dart';
 
 class RegisterForm extends StatefulWidget {
   final Function(bool, String) onRegisterResult;

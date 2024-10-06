@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:remindday_app/register/screen/register_screen.dart';
-import '../controller/auth_controller.dart';
+import 'package:remindday_app/register/screens/register_screen.dart';
+import '../controllers/auth_controller.dart';
 import '../../group/screen/group_screen.dart';
 
 class LoginScreen extends StatefulWidget {

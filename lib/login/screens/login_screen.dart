@@ -64,12 +64,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       _usernameController.text,
                       _passwordController.text,
                     );
-
+                    debugPrint("data: ${loginData?['loginId']}, ${loginData?['userId']}");
                     if (loginData != null && loginData['loginId'] != 0) {
                       if (loginData['hasInfo']) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => GroupScreen(),
+                            builder: (context) => GroupScreen(userId: loginData['userId']),
                           ),
                         );
                       } else {

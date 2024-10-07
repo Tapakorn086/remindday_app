@@ -19,22 +19,32 @@ class AuthService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
+      debugPrint("data: $email,$password");
+      debugPrint("data: ${jsonDecode(response.body)}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
         int loginId = data['loginId'];
-        bool hasInfo = data['hasInfo'];  
+        bool hasInfo = data['hasInfo'];
+        int userId = 00;
+        debugPrint("data: $userId,$hasInfo,$loginId");
 
         await _storage.write(key: 'loginId', value: loginId.toString());
 
-        return {'loginId': loginId, 'hasInfo': hasInfo};
+        if (hasInfo == false) {
+          return {'loginId': loginId, 'hasInfo': hasInfo};
+        } else {
+          userId = data['userId'];
+          debugPrint("data: $userId,$hasInfo,$loginId");
+          return {'loginId': loginId, 'hasInfo': hasInfo, 'userId': userId};
+        }
       }
     } catch (e) {
       debugPrint('Error during login: $e');
     }
 
-    return {'loginId': 0, 'hasInfo': false};  
+    return {'loginId': 0, 'hasInfo': false, 'userId': 0};
   }
 
   Future<void> logout() async {

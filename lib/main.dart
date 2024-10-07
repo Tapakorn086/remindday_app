@@ -35,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   final AuthService _authService = AuthService();
   final List<Widget> _screens = [
     RemindDayListScreen(),
-    GroupScreen(),
+    GroupScreen(userId: 0,),
   ];
 
   @override

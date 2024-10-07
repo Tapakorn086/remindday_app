@@ -63,12 +63,12 @@ class UserInfoForm extends StatelessWidget {
               userController.setLoginId(loginId!);
               if (_formKey.currentState!.validate()) {
                 try {
-                  await userController.saveUser();
+                  final data = await userController.saveUser();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('User saved successfully')),
                   );
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const GroupScreen()),
+                    MaterialPageRoute(builder: (context) => GroupScreen(userId: data['userId']!,)),
                   );
 
                 } catch (error) {

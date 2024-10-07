@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../service/register_service.dart';
+
+import '../services/register_service.dart';
 
 class RegisterController {
   final RegisterService _registerService = RegisterService();

@@ -1,45 +1,59 @@
+// group_screen.dart
 import 'package:flutter/material.dart';
+import 'package:remindday_app/group/models/group_model.dart';
 import '../../group/controller/group_controller.dart';
 import '../widgets/group_list_item.dart';
-import '../../group/service/group_service.dart';
 
 class GroupScreen extends StatefulWidget {
-  const GroupScreen({super.key});
+  final int userId;
+  const GroupScreen({super.key, required this.userId});
 
   @override
-  // ignore: library_private_types_in_public_api
   _GroupScreenState createState() => _GroupScreenState();
 }
 
 class _GroupScreenState extends State<GroupScreen> {
   final GroupController _groupController = GroupController();
   late Future<List<Group>> _groupsFuture;
+  
 
   @override
   void initState() {
     super.initState();
-    _groupsFuture = _groupController.getGroups();
+    _groupsFuture = _groupController.getGroups(widget.userId);
   }
 
   void _refreshGroups() {
     setState(() {
-      _groupsFuture = _groupController.getGroups();
+      _groupsFuture = _groupController.getGroups(widget.userId);
     });
   }
 
   Future<void> _addGroup() async {
-    final result = await showDialog<String>(
+    final result = await showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
         String newGroupName = '';
+        String newGroupDescription = '';
         return AlertDialog(
           title: const Text('Add New Group'),
-          content: TextField(
-            autofocus: true,
-            decoration: const InputDecoration(hintText: 'Enter group name'),
-            onChanged: (value) {
-              newGroupName = value;
-            },
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                autofocus: true,
+                decoration: const InputDecoration(hintText: 'Enter group name'),
+                onChanged: (value) {
+                  newGroupName = value;
+                },
+              ),
+              TextField(
+                decoration: const InputDecoration(hintText: 'Enter group description'),
+                onChanged: (value) {
+                  newGroupDescription = value;
+                },
+              ),
+            ],
           ),
           actions: <Widget>[
             TextButton(
@@ -48,23 +62,41 @@ class _GroupScreenState extends State<GroupScreen> {
             ),
             TextButton(
               child: const Text('Add'),
-              onPressed: () => Navigator.of(context).pop(newGroupName),
+              onPressed: () => Navigator.of(context).pop({
+                'name': newGroupName,
+                'description': newGroupDescription,
+              }),
             ),
           ],
         );
       },
     );
 
-    if (result != null && result.isNotEmpty) {
-      await _groupController.addGroup(result);
+    if (result != null && result['name']!.isNotEmpty) {
+      final referralCode = await _groupController.addGroup(
+        result['name']!,
+        result['description']!,
+        widget.userId,
+      );
       _refreshGroups();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Group added with Referral Code: $referralCode')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Groups')),
+      appBar: AppBar(
+        title: const Text('Groups'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.group_add),
+            onPressed: _addGroup,
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           _refreshGroups();
@@ -85,8 +117,6 @@ class _GroupScreenState extends State<GroupScreen> {
                   return GroupListItem(
                     group: snapshot.data![index],
                     onTap: () {
-                      // Navigate to group details screen
-                      // You'll need to implement this screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -109,7 +139,6 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 }
 
-// Placeholder for GroupDetailsScreen
 class GroupDetailsScreen extends StatelessWidget {
   final Group group;
 
@@ -119,7 +148,15 @@ class GroupDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(group.name)),
-      body: Center(child: Text('Group Details: ${group.id}')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Group ID: ${group.id}'),
+            Text('Referral Code: ${group.referralCode}'), // แสดง referralCode
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,26 +1,41 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:remindday_app/AddToDo.dart';
+//import 'todo.dart'; // นำเข้าคลาส Todo
+import 'package:http/http.dart' as http;
+import 'package:remindday_app/todo/screens/note_remind_day_screen.dart';
+import 'dart:convert';
 
-void main() {
-  runApp(const MyApp());
-}
+//import 'package:remindday_app/todo/screens/note_screen.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Todo {
+  final int id;
+  final String title;
+  final String description;
+  final String type;
+  final String importance;
+  final String status;
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: RemindDayListScreen(),
+  Todo({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.type,
+    required this.importance,
+    required this.status,
+  });
+
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      type: json['type'],
+      importance: json['importance'],
+      status: json['status'],
     );
   }
 }
+
 
 class RemindDayListScreen extends StatefulWidget {
   @override
@@ -31,16 +46,24 @@ class _RemindDayListScreenState extends State<RemindDayListScreen> {
   late ScrollController _scrollController;
   late DateTime _selectedDate;
   late List<DateTime> _weekDays;
-  List<bool> _taskCompletionStatus = [false, false, false];
+  List<Todo> _todos = [];
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
     _weekDays = _generateWeekDays(_selectedDate);
-    _scrollController = ScrollController(
-      initialScrollOffset: 3 * 48.0,  // 48.0 is the width of each day item
-    );
+    _scrollController = ScrollController(initialScrollOffset: 3 * 48.0);
+
+    // Fetch todos from API
+    fetchTodos().then((fetchedTodos) {
+      setState(() {
+        _todos = fetchedTodos;
+      });
+    }).catchError((error) {
+      // Handle error if needed
+      print('Error fetching todos: $error');
+    });
   }
 
   @override
@@ -51,6 +74,17 @@ class _RemindDayListScreenState extends State<RemindDayListScreen> {
 
   List<DateTime> _generateWeekDays(DateTime centerDate) {
     return List.generate(7, (index) => centerDate.subtract(Duration(days: 3 - index)));
+  }
+
+  Future<List<Todo>> fetchTodos() async {
+    final response = await http.get(Uri.parse('http://localhost:8080/api/gettodo')); // เปลี่ยน URL ให้ตรงกับ API ของคุณ
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((todo) => Todo.fromJson(todo)).toList();
+    } else {
+      throw Exception('Failed to load todos');
+    }
   }
 
   Widget _buildWeekDays() {
@@ -155,10 +189,10 @@ class _RemindDayListScreenState extends State<RemindDayListScreen> {
               ),
               IconButton(
                 icon: Icon(Icons.add, color: Colors.black),
-                onPressed: () {
+                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const NoteRemindDayScreen(title: "asds")),
+                    MaterialPageRoute(builder: (context) => const NoteRemindDayScreen()),
                   );
                 },
               ),
@@ -168,53 +202,38 @@ class _RemindDayListScreenState extends State<RemindDayListScreen> {
       ),
     );
   }
-
   Widget _buildTaskList() {
     return Expanded(
-      child: ListView(
-        children: [
-          _buildTaskItem('08:00 นาฬิกา', 'ตื่นนอน', Colors.pink[100]!, 0),
-          _buildTaskItem('09:00 นาฬิกา', 'ทานอาหารเช้า', Colors.green[100]!, 1),
-          _buildTaskItem('10:00 นาฬิกา', 'ออกกำลังกาย', Colors.pink[100]!, 2),
-        ],
+      child: ListView.builder(
+        itemCount: _todos.length,
+        itemBuilder: (context, index) {
+          return _buildTaskItem(
+            _todos[index].title, // or any other property you want to show
+            _todos[index].description, // or any other property you want to show
+          );
+        },
       ),
     );
   }
 
-  Widget _buildTaskItem(String time, String task, Color color, int index) {
+  Widget _buildTaskItem(String title, String description) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          Transform.scale(
-            scale: 1.2,
-            child: Checkbox(
-              value: _taskCompletionStatus[index],
-              onChanged: (bool? value) {
-                setState(() {
-                  _taskCompletionStatus[index] = value!;
-                });
-              },
-              activeColor: Colors.green,
-              checkColor: Colors.white,
-              shape: CircleBorder(),
-              side: BorderSide(color: Colors.grey),
-            ),
-          ),
-          SizedBox(width: 16),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color,
+                color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(time),
-                  Text(task),
-                  Icon(Icons.more_vert),
+                  Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(height: 4),
+                  Text(description),
                 ],
               ),
             ),
@@ -249,22 +268,6 @@ class _RemindDayListScreenState extends State<RemindDayListScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
         ],
-      ),
-    );
-  }
-}
-
-class AddTaskScreen extends StatelessWidget {
-  const AddTaskScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Task'),
-      ),
-      body: Center(
-        child: Text('Add your task details here!'),
       ),
     );
   }

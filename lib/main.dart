@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remindday_app/RemindDayList/screen/RemindDayList.dart';
-import 'group/screen/group_screen.dart';
+import 'package:remindday_app/group/screen/group_screen.dart';
 import 'login/screens/login_screen.dart';
 import 'login/services/auth_service.dart';
 
@@ -34,8 +34,8 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   final AuthService _authService = AuthService();
   final List<Widget> _screens = [
-    
-    RemindDayListScreen(), // Using GroupScreen as the home screen for now
+    RemindDayListScreen(),
+    GroupScreen(),
   ];
 
   @override

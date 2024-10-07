@@ -58,7 +58,7 @@ class _MainScreenState extends State<MainScreen> {
           if (index == 1 && !await _authService.isLoggedIn()) {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
             );
             if (result == true) {
               setState(() {

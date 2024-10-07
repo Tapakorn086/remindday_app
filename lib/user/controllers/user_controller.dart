@@ -26,7 +26,7 @@ class UserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveUser() async {
-    await userService.saveUser(user);
+  Future<Map<String, int>> saveUser() async {
+    return await userService.saveUser(user);
   }
 }

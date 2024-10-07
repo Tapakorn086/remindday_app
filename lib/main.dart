@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:remindday_app/RemindDayList/screens/RemindDayList.dart';
 import 'package:remindday_app/group/screen/group_screen.dart';
 import 'login/screens/login_screen.dart';
 import 'login/services/auth_service.dart';

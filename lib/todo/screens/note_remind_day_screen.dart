@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../RemindDayList/screens/RemindDayList.dart';
+import 'package:remindday_app/todolist/screens/todolist_screen.dart';
 import '../controllers/note_controller.dart';
 import '../models/note_model.dart' as ModelTodo;
 import '../widgets/custom_dropdown.dart';
@@ -173,7 +173,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
       );
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => RemindDayListScreen()),
+        MaterialPageRoute(builder: (context) => TodoDayListScreen()),
       );
     }
   }

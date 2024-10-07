@@ -3,6 +3,7 @@ import 'package:remindday_app/RemindDayList/screens/RemindDayList.dart';
 import 'package:remindday_app/group/screen/group_screen.dart';
 import 'login/screens/login_screen.dart';
 import 'login/services/auth_service.dart';
+import 'todolist/screens/todolist_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   final AuthService _authService = AuthService();
   final List<Widget> _screens = [
-    RemindDayListScreen(),
+    TodoDayListScreen(),
     GroupScreen(userId: 0,),
   ];
 

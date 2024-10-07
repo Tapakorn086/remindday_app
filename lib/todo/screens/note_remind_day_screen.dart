@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:remindday_app/todo/controllers/note_controller.dart';
-import 'package:remindday_app/todo/widgets/note_form_widget.dart';
+import '../controllers/note_controller.dart';
+import '../models/note_model.dart';
+import '../widgets/custom_dropdown.dart';
+import '../widgets/custom_text_field.dart';
 
 class NoteRemindDayScreen extends StatefulWidget {
   const NoteRemindDayScreen({super.key});
@@ -11,96 +13,169 @@ class NoteRemindDayScreen extends StatefulWidget {
 
 class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _taskNameController = TextEditingController();
-  final _detailsController = TextEditingController();
-  final _dateController = TextEditingController();
+  final TodoController _todoController = TodoController();
+
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+
   String? _selectedType;
   String? _selectedImportance;
-  String? _selectedStartTime;
-  String? _selectedReminderTime;
+  TimeOfDay? _selectedStartTime;
+  int? _selectedNotifyMinutes;
+  DateTime? _selectedStartDate;
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      // ตรวจสอบให้แน่ใจว่าข้อมูลที่จำเป็นมีการกรอกครบถ้วน
-      if (_selectedType == null || _selectedImportance == null || _selectedStartTime == null || _selectedReminderTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบถ้วน!')),
-        );
-        return;
-      }
+  List<String> _generateTimeList() {
+    return List.generate(
+        24, (index) => '${index.toString().padLeft(2, '0')}:00');
+  }
 
-      try {
-        await NoteController().addNote(
-          title: _taskNameController.text,
-          description: _detailsController.text,
-          type: _selectedType!,
-          importance: _selectedImportance!,
-          startTime: _selectedStartTime!, // ต้องแน่ใจว่าส่งในรูปแบบที่ถูกต้อง
-          startDate: _dateController.text, // ควรส่งในรูปแบบ YYYY-MM-DD
-          notifyMinutesBefore: int.parse(_selectedReminderTime!.split(' ')[0]), // ต้องแปลงเป็น int
-          status: 'Pending',
-        );
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Note added successfully!')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('เกิดข้อผิดพลาด: $e')),
-        );
-      }
-    }
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _dateController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Note Reminder'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text("Add ToDo"),
+        backgroundColor: const Color(0xFFE6E6FA),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: NoteFormWidget(
-          formKey: _formKey,
-          taskNameController: _taskNameController,
-          detailsController: _detailsController,
-          dateController: _dateController,
-          selectedType: _selectedType,
-          selectedImportance: _selectedImportance,
-          selectedStartTime: _selectedStartTime,
-          selectedReminderTime: _selectedReminderTime,
-          onTypeChanged: (value) => setState(() {
-            _selectedType = value;
-          }),
-          onImportanceChanged: (value) => setState(() {
-            _selectedImportance = value;
-          }),
-          onStartTimeChanged: (value) => setState(() {
-            _selectedStartTime = value;
-          }),
-          onReminderTimeChanged: (value) => setState(() {
-            _selectedReminderTime = value;
-          }),
-          onDatePicked: () async {
-            DateTime? selectedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2101),
-            );
-            if (selectedDate != null) {
-              setState(() {
-                // เก็บค่าลง _dateController
-                _dateController.text = selectedDate.toLocal().toString().split(' ')[0]; 
-              });
-            }
-          },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomTextField(
+                  label: 'ชื่องาน',
+                  controller: _titleController,
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  label: 'เพิ่มรายละเอียด',
+                  controller: _descriptionController,
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+                CustomDropdown(
+                  label: 'ประเภท',
+                  items: const ['เรียน', 'งาน', 'อื่นๆ'],
+                  value: _selectedType,
+                  onChanged: (value) => setState(() => _selectedType = value),
+                ),
+                const SizedBox(height: 16),
+                CustomDropdown(
+                  label: 'สำคัญมากน้อย',
+                  items: const ['สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'],
+                  value: _selectedImportance,
+                  onChanged: (value) =>
+                      setState(() => _selectedImportance = value),
+                ),
+                const SizedBox(height: 16),
+                CustomDropdown(
+                  label: 'เวลาที่ต้องการให้แจ้งเตือน',
+                  items: _generateTimeList(),
+                  value: _selectedStartTime?.format(context),
+                  onChanged: (value) {
+                    if (value != null) {
+                      final parts = value.split(':');
+                      setState(() => _selectedStartTime =
+                          TimeOfDay(hour: int.parse(parts[0]), minute: 0));
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomDropdown(
+                  label: 'เวลาเตือนก่อนกิจกรรมเริ่ม',
+                  items: const [
+                    '5 นาที',
+                    '10 นาที',
+                    '15 นาที',
+                    '30 นาที',
+                    '1 ชั่วโมง'
+                  ],
+                  value: _selectedNotifyMinutes?.toString(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _selectedNotifyMinutes =
+                          int.parse(value.split(' ')[0]));
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  label: 'เลือกวันที่จะแจ้งเตือน',
+                  controller: _dateController,
+                  readOnly: true,
+                  onTap: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                    if (pickedDate != null) {
+                      setState(() {
+                        _selectedStartDate = pickedDate;
+                        _dateController.text =
+                            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFFE6E6FA),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  onPressed: _submitForm,
+                  child: const Text('เพิ่มข้อมูล'),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _submitForm,
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
+        ],
+        onTap: (index) {
+          // Handle bottom navigation tap here
+        },
       ),
     );
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final newTodo = Todo(
+        title: _titleController.text,
+        description: _descriptionController.text,
+        type: _selectedType!,
+        importance: _selectedImportance!,
+        startDate: _selectedStartDate!,
+        startTime: _selectedStartTime!,
+        notifyMinutesBefore: _selectedNotifyMinutes!,
+        status: 'Pending', 
+      );
+
+      _todoController.addTodo(newTodo);
+    }
   }
 }

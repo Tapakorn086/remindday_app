@@ -1,34 +1,54 @@
-class Note {
+import 'package:flutter/material.dart';
+
+class Todo {
   final String title;
   final String description;
-  final String importance;
-  final int notifyMinutesBefore; // Keep as int
-  final String startDate; // Keep as String
-  final String startTime; // Keep as String
-  final String status;
   final String type;
+  final String importance;
+  final DateTime startDate;
+  final TimeOfDay startTime;
+  final int notifyMinutesBefore;
+  final String status;
 
-  Note({
+  Todo({
     required this.title,
     required this.description,
+    required this.type,
     required this.importance,
-    required this.notifyMinutesBefore,
     required this.startDate,
     required this.startTime,
+    required this.notifyMinutesBefore,
     required this.status,
-    required this.type,
   });
+
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(
+      title: json['title'],
+      description: json['description'],
+      type: json['type'],
+      importance: json['importance'],
+      startDate: DateTime.parse(json['startDate']),
+      startTime: TimeOfDay.fromDateTime(DateTime.parse(json['startTime'])),
+      notifyMinutesBefore: json['notifyMinutesBefore'],
+      status: json['status'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
       'title': title,
       'description': description,
-      'importance': importance,
-      'notify_minutes_before': notifyMinutesBefore, // Update to match the JSON key
-      'start_date': startDate, // Update to match the JSON key
-      'start_time': startTime, // Update to match the JSON key
-      'status': status,
       'type': type,
+      'importance': importance,
+      'startDate': startDate.toIso8601String(),
+      'startTime': DateTime(startDate.year, startDate.month, startDate.day, startTime.hour, startTime.minute).toIso8601String(),
+      'notifyMinutesBefore': notifyMinutesBefore,
+      'status': status,
     };
+  }
+
+  @override
+  String toString() {
+    return 'Todo(title: $title, description: $description, type: $type, importance: $importance, startDate: $startDate, startTime: 10:10, notifyMinutesBefore: $notifyMinutesBefore, status: $status)';
   }
 }

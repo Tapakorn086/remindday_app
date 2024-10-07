@@ -1,35 +1,34 @@
-import 'package:remindday_app/todo/services/note_service.dart';
-import 'package:remindday_app/todo/models/note_model.dart'; // Ensure this path is correct
+import 'dart:convert';
 
-class NoteController {
-  final NoteService _noteService = NoteService();
+import 'package:flutter/material.dart';
 
-  Future<void> addNote({
-    required String title,
-    required String description,
-    required String type,
-    required String importance,
-    required String startTime,
-    required String startDate,
-    required int notifyMinutesBefore,
-    required String status,
-  }) async {
-    Note newNote = Note(
-      title: title,
-      description: description,
-      type: type,
-      importance: importance,
-      startTime: startTime,
-      startDate: startDate,
-      notifyMinutesBefore: notifyMinutesBefore,
-      status: status,
-    );
+import '../models/note_model.dart';
+import '../services/note_service.dart';
 
+class TodoController extends ChangeNotifier {
+  final TodoService _todoService = TodoService();
+  List<Todo> _todos = [];
+
+  List<Todo> get todos => _todos;
+
+  Future<void> fetchTodos() async {
     try {
-      await _noteService.addNote(newNote);
+      _todos = await _todoService.getTodos();
+      notifyListeners();
     } catch (e) {
-      // Handle error (e.g., show a message to the user)
-      print('Error adding note: $e');
+      // Handle error
+    }
+  }
+
+  Future<void> addTodo(Todo todo) async {
+    debugPrint("data: $todo");
+    debugPrint("data: ${json.encode(todo.toJson())}");
+    try {
+      final newTodo = await _todoService.createTodo(todo);
+      _todos.add(newTodo);
+      notifyListeners();
+    } catch (e) {
+      // Handle error
     }
   }
 }

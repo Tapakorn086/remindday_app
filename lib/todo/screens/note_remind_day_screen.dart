@@ -150,16 +150,6 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
-        ],
-        onTap: (index) {
-          // Handle bottom navigation tap here
-        },
-      ),
     );
   }
 

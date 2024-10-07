@@ -12,4 +12,7 @@ class GroupController {
   Future<String> addGroup(String name, String description, int ownerId) async {
     return await _groupService.addGroup(name, description, ownerId);
   }
+    Future<void> joinGroup(String referralCode, int userId) async {
+    await _groupService.joinGroup(referralCode, userId);
+  }
 }

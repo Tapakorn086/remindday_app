@@ -15,7 +15,6 @@ class GroupScreen extends StatefulWidget {
 class _GroupScreenState extends State<GroupScreen> {
   final GroupController _groupController = GroupController();
   late Future<List<Group>> _groupsFuture;
-  
 
   @override
   void initState() {
@@ -48,7 +47,8 @@ class _GroupScreenState extends State<GroupScreen> {
                 },
               ),
               TextField(
-                decoration: const InputDecoration(hintText: 'Enter group description'),
+                decoration:
+                    const InputDecoration(hintText: 'Enter group description'),
                 onChanged: (value) {
                   newGroupDescription = value;
                 },
@@ -80,8 +80,52 @@ class _GroupScreenState extends State<GroupScreen> {
       );
       _refreshGroups();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Group added with Referral Code: $referralCode')),
+        SnackBar(
+            content: Text('Group added with Referral Code: $referralCode')),
       );
+    }
+  }
+
+  Future<void> _joinGroup() async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String referralCode = '';
+        return AlertDialog(
+          title: const Text('Join Group'),
+          content: TextField(
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Enter group ID'),
+            onChanged: (value) {
+              referralCode = value;
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Join'),
+              onPressed: () => Navigator.of(context).pop(referralCode),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null && result.isNotEmpty) {
+      try {
+        await _groupController.joinGroup(result, widget.userId);
+        _refreshGroups();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Successfully joined group')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to join group: $e')),
+        );
+      }
     }
   }
 
@@ -94,6 +138,10 @@ class _GroupScreenState extends State<GroupScreen> {
           IconButton(
             icon: const Icon(Icons.group_add),
             onPressed: _addGroup,
+          ),
+          IconButton(
+            icon: const Icon(Icons.person_add),
+            onPressed: _joinGroup,
           ),
         ],
       ),
@@ -120,7 +168,8 @@ class _GroupScreenState extends State<GroupScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GroupDetailsScreen(group: snapshot.data![index]),
+                          builder: (context) =>
+                              GroupDetailsScreen(group: snapshot.data![index]),
                         ),
                       );
                     },

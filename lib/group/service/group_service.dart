@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
+
 import '../models/group_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -6,7 +8,8 @@ class GroupService {
   final String apiUrl = 'http://192.168.1.105:8080/api/group';
 
   Future<List<Group>> getGroupsByUserId(int userId) async {
-    final response = await http.get(Uri.parse('$apiUrl/getGroupByUserId/$userId'));
+    final response =
+        await http.get(Uri.parse('$apiUrl/getGroupByUserId/$userId'));
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       return jsonData.map((group) => Group.fromJson(group)).toList();
@@ -34,6 +37,21 @@ class GroupService {
       }
     } else {
       throw Exception('Failed to add group: ${response.statusCode}');
+    }
+  }
+
+  Future<void> joinGroup(String referralCode, int userId) async {
+    debugPrint("data: $referralCode,$userId");
+    final response = await http.post(
+      Uri.parse('$apiUrl/joinGroup'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({'referralCode': referralCode, 'userId': userId}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to join group: ${response.statusCode}');
     }
   }
 }

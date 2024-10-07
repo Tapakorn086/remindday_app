@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../RemindDayList/screens/RemindDayList.dart';
 import '../controllers/note_controller.dart';
-import '../models/note_model.dart';
+import '../models/note_model.dart' as ModelTodo;
 import '../widgets/custom_dropdown.dart';
 import '../widgets/custom_text_field.dart';
 
@@ -164,7 +165,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      final newTodo = Todo(
+      final newTodo = ModelTodo.Todo(
         title: _titleController.text,
         description: _descriptionController.text,
         type: _selectedType!,
@@ -172,10 +173,18 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
         startDate: _selectedStartDate!,
         startTime: _selectedStartTime!,
         notifyMinutesBefore: _selectedNotifyMinutes!,
-        status: 'Pending', 
+        status: 'Pending',
       );
 
       _todoController.addTodo(newTodo);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Todo added successfully')),
+      );
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => RemindDayListScreen()),
+      );
     }
   }
 }

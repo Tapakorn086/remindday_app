@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remindday_app/register/screens/register_screen.dart';
+import 'package:remindday_app/user/screens/user_screen.dart';
 import '../controllers/auth_controller.dart';
-import '../../group/screen/group_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthController _authController = AuthController();
+
 
   @override
   void dispose() {
@@ -58,13 +59,15 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    bool success = await _authController.login(
+                    int? loginId = await _authController.login(
                       _usernameController.text,
                       _passwordController.text,
                     );
-                    if (success) {
+                    if (loginId != 0) {
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => const GroupScreen()),
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                UserInfoScreen(loginId: loginId)),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

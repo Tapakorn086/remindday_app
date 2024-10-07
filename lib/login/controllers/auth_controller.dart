@@ -1,15 +1,18 @@
+import 'package:flutter/material.dart';
+
 import '../services/auth_service.dart';
 
 class AuthController {
   final AuthService _authService = AuthService();
+  var userId = 0;
 
-  Future<bool> login(String email, String password) async {
+  Future<int?> login(String email, String password) async {
     try {
-      await _authService.login(email, password);
-      return true;
+      userId = await _authService.login(email, password);
+      return userId;
     } catch (e) {
-      print('Login error: $e');
-      return false;
+      debugPrint('Login error: $e');
+      return userId;
     }
   }
 

@@ -16,14 +16,16 @@ class UserService {
         'username': user.username,
         'age': user.age,
         'gender': user.gender,
-        'groups': "0",
-        'login' : user.loginId,
+        'login': {
+          'id': user.loginId,
+        },
+        'groups': [],
       }),
     );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to save user');
-    }else{
+    } else {
       debugPrint(response.body);
     }
   }

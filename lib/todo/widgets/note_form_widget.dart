@@ -40,7 +40,7 @@ class NoteFormWidget extends StatelessWidget {
         children: [
           TextFormField(
             controller: taskNameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'ชื่องาน',
               border: OutlineInputBorder(),
             ),
@@ -51,19 +51,19 @@ class NoteFormWidget extends StatelessWidget {
               return null;
             },
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextFormField(
             controller: detailsController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'เพิ่มรายละเอียด',
               border: OutlineInputBorder(),
             ),
             maxLines: 3,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: selectedType,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'ประเภท',
               border: OutlineInputBorder(),
             ),
@@ -76,10 +76,10 @@ class NoteFormWidget extends StatelessWidget {
             onChanged: onTypeChanged,
             validator: (value) => value == null ? 'กรุณาเลือกประเภท' : null,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: selectedImportance,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'สำคัญมากน้อย',
               border: OutlineInputBorder(),
             ),
@@ -92,10 +92,10 @@ class NoteFormWidget extends StatelessWidget {
             onChanged: onImportanceChanged,
             validator: (value) => value == null ? 'กรุณาเลือกความสำคัญ' : null,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: selectedStartTime,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'เวลาที่ต้องการให้แจ้งเตือน',
               border: OutlineInputBorder(),
             ),
@@ -108,12 +108,12 @@ class NoteFormWidget extends StatelessWidget {
             onChanged: onStartTimeChanged,
             validator: (value) => value == null ? 'กรุณาเลือกเวลาเริ่มต้น' : null,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           
         
           TextFormField(
             controller: dateController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'เลือกวันที่จะแจ้งเตือน',
               border: OutlineInputBorder(),
             ),
@@ -126,10 +126,10 @@ class NoteFormWidget extends StatelessWidget {
               return null;
             },
           ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: selectedReminderTime,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'เวลาเตือนก่อนกิจกรรมเริ่ม',
               border: OutlineInputBorder(),
             ),

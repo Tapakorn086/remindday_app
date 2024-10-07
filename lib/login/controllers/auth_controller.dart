@@ -6,13 +6,14 @@ class AuthController {
   final AuthService _authService = AuthService();
   var userId = 0;
 
-  Future<int?> login(String email, String password) async {
+  Future<Map<String, dynamic>?> login(String email, String password) async {
     try {
-      userId = await _authService.login(email, password);
-      return userId;
+      Map<String, dynamic> loginData =
+          await _authService.login(email, password);
+      return loginData;
     } catch (e) {
       debugPrint('Login error: $e');
-      return userId;
+      return null;
     }
   }
 

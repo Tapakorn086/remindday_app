@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remindday_app/group/screen/group_screen.dart';
 import 'package:remindday_app/register/screens/register_screen.dart';
 import 'package:remindday_app/user/screens/user_screen.dart';
 import '../controllers/auth_controller.dart';
@@ -15,7 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthController _authController = AuthController();
-
 
   @override
   void dispose() {
@@ -59,16 +59,28 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    int? loginId = await _authController.login(
+                    Map<String, dynamic>? loginData =
+                        await _authController.login(
                       _usernameController.text,
                       _passwordController.text,
                     );
-                    if (loginId != 0) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                UserInfoScreen(loginId: loginId)),
-                      );
+
+                    if (loginData != null && loginData['loginId'] != 0) {
+                      if (loginData['hasInfo']) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => GroupScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => UserInfoScreen(
+                              loginId: loginData['loginId'],
+                            ),
+                          ),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

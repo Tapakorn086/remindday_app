@@ -8,36 +8,34 @@ class AuthService {
   final String _loginUrl = 'http://192.168.1.105:8080/api/login/sessionlogin';
 
   Future<bool> isLoggedIn() async {
-    // ตรวจสอบ token ใน secure storage
     String? token = await _storage.read(key: 'token');
     return token != null;
   }
-Future<int> login(String email, String password) async {
-  try {
-    final response = await http.post(
-      Uri.parse(_loginUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
-    );
 
-    if (response.statusCode == 200) {
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse(_loginUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
 
-      final data = jsonDecode(response.body);
-      // String token = data['token'];
-      int loginId = data['loginId'];
-      // เก็บ token และ loginId ใน secure storage
-      // await _storage.write(key: 'token', value: token);
-      // await _storage.write(key: 'loginId', value: loginId.toString()); // เก็บ loginId
-      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-      return loginId; // คืนค่า loginId
+        int loginId = data['loginId'];
+        bool hasInfo = data['hasInfo'];  
+
+        await _storage.write(key: 'loginId', value: loginId.toString());
+
+        return {'loginId': loginId, 'hasInfo': hasInfo};
+      }
+    } catch (e) {
+      debugPrint('Error during login: $e');
     }
-  } catch (e) {
-    debugPrint('Error during login: $e');
-  }
-  return 0; // คืนค่า null ในกรณีที่ล็อกอินไม่สำเร็จ
-}
 
+    return {'loginId': 0, 'hasInfo': false};  
+  }
 
   Future<void> logout() async {
     await _storage.delete(key: 'token');

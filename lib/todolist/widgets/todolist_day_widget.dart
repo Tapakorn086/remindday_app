@@ -15,7 +15,7 @@ class WeekDaysWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 70,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -36,13 +36,15 @@ class WeekDaysWidget extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? Colors.blue : (isToday ? Colors.blue[100] : Colors.grey[200]),
+                color: isSelected
+                    ? Colors.blue
+                    : (isToday ? Colors.blue[100] : Colors.grey[200]),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat('E').format(day).substring(0, 1),
+                    DateFormat('EEE', 'th').format(day).replaceAll('.', ''),
                     style: TextStyle(
                       color: isSelected ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,

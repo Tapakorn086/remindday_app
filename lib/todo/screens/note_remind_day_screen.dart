@@ -7,7 +7,9 @@ import '../widgets/custom_dropdown.dart';
 import '../widgets/custom_text_field.dart';
 
 class NoteRemindDayScreen extends StatefulWidget {
-  const NoteRemindDayScreen({super.key});
+  final DateTime selectedDate;
+
+  const NoteRemindDayScreen({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
   _NoteRemindDayScreenState createState() => _NoteRemindDayScreenState();

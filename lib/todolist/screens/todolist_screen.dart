@@ -54,17 +54,32 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     });
   }
 
-  void _onAddTask() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const NoteRemindDayScreen()),
+void _onAddTask() async {
+  DateTime now = DateTime.now();
+  DateTime today = DateTime(now.year, now.month, now.day);
+  DateTime selectedDate = DateTime(_controller.selectedDate.year, _controller.selectedDate.month, _controller.selectedDate.day);
+
+  if (selectedDate.isBefore(today)) {
+    // แสดงข้อความแจ้งเตือนว่าไม่สามารถเพิ่มงานในวันที่ผ่านมาแล้วได้
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('ไม่สามารถเพิ่มงานในวันที่ผ่านมาแล้วได้'),
+        backgroundColor: Colors.red,
+      ),
     );
-    if (result == true) {
-      setState(() {
-        _loadTodos();
-      });
-    }
+    return;
   }
+
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NoteRemindDayScreen(selectedDate: _controller.selectedDate)),
+  );
+  if (result == true) {
+    setState(() {
+      _loadTodos();
+    });
+  }
+}
 
   void updateTodoStatus(Todo todo) async {
     try {

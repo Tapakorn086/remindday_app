@@ -62,11 +62,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         titleTextFormatter: (date, locale) => 
           '${_getThaiMonth(date)} ${date.year + 543}',
       ),
-      daysOfWeekStyle: DaysOfWeekStyle(
+      daysOfWeekStyle: const DaysOfWeekStyle(
         weekdayStyle: TextStyle(color: Colors.black),
         weekendStyle: TextStyle(color: Colors.red),
       ),
-      calendarStyle: CalendarStyle(
+      calendarStyle: const CalendarStyle(
         weekendTextStyle: TextStyle(color: Colors.red),
         holidayTextStyle: TextStyle(color: Colors.red),
       ),
@@ -89,7 +89,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             ),
             child: Text(
               '${date.day}',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           );
         },
@@ -103,7 +103,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             ),
             child: Text(
               '${date.day}',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           );
         },

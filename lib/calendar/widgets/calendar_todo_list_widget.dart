@@ -26,7 +26,7 @@ class CalendarTodoListWidget extends StatelessWidget {
               final Todo todo = entry.value;
               return _buildTodoItem(todo, isFirst: index == 0);
             }),
-            if (completedTodos.isNotEmpty) Divider(height: 30, thickness: 2),
+            if (completedTodos.isNotEmpty) const Divider(height: 30, thickness: 2),
             ...completedTodos.map((todo) => _buildTodoItem(todo, isCompleted: true)),
           ],
         );
@@ -43,7 +43,7 @@ class CalendarTodoListWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTimeWidget(todo.startTime),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,13 +79,13 @@ class CalendarTodoListWidget extends StatelessWidget {
 
   Widget _buildTimeWidget(String? timeString) {
     if (timeString == null || timeString.isEmpty) {
-      return SizedBox(width: 50);
+      return const SizedBox(width: 50);
     }
 
     try {
       final time = DateFormat('HH:mm').parse(timeString);
       final formattedTime = DateFormat('HH:mm').format(time);
-      return Container(
+      return SizedBox(
         width: 50,
         child: Text(
           formattedTime,
@@ -97,7 +97,7 @@ class CalendarTodoListWidget extends StatelessWidget {
         ),
       );
     } catch (e) {
-      return SizedBox(width: 50);
+      return const SizedBox(width: 50);
     }
   }
 }

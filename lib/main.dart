@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:remindday_app/calendar/screens/calendar_screen.dart';
-import 'package:remindday_app/group/screen/group_screen.dart';
 import 'login/screens/login_screen.dart';
 import 'login/services/auth_service.dart';
 import 'todolist/screens/todolist_screen.dart';
@@ -32,53 +31,40 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // เก็บสถานะของแท็บที่ถูกเลือก
   final AuthService _authService = AuthService();
+  
   final List<Widget> _screens = [
     TodoDayListScreen(),
-    GroupScreen(
-      userId: 0,
-    ),
     CalendarScreen(),
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index; 
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: _screens[_selectedIndex], 
       bottomNavigationBar: BottomNavigationBar(
+        iconSize: 30,
+        selectedFontSize: 16,
+        unselectedFontSize: 14,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'หน้าแรก',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'กลุ่ม',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'ปฏิทิน',
           ),
         ],
-        currentIndex: _selectedIndex,
-        onTap: (index) async {
-          if (index == 1 && !await _authService.isLoggedIn()) {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
-            if (result == true) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            }
-          } else {
-            setState(() {
-              _selectedIndex = index;
-            });
-          }
-        },
+        currentIndex: _selectedIndex, 
+        onTap: _onItemTapped, 
       ),
     );
   }

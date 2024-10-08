@@ -46,11 +46,11 @@ class _MainScreenState extends State<MainScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'หน้าแรก',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.group),
-            label: 'Group',
+            label: 'กลุ่ม',
           ),
         ],
         currentIndex: _selectedIndex,

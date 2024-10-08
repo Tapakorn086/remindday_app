@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remindday_app/calendar/screens/calendar_screen.dart';
 import 'package:remindday_app/group/screen/group_screen.dart';
 import 'login/screens/login_screen.dart';
 import 'login/services/auth_service.dart';
@@ -35,7 +36,10 @@ class _MainScreenState extends State<MainScreen> {
   final AuthService _authService = AuthService();
   final List<Widget> _screens = [
     TodoDayListScreen(),
-    GroupScreen(userId: 0,),
+    GroupScreen(
+      userId: 0,
+    ),
+    CalendarScreen(),
   ];
 
   @override
@@ -51,6 +55,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.group),
             label: 'กลุ่ม',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'ปฏิทิน',
           ),
         ],
         currentIndex: _selectedIndex,

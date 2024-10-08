@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../models/note_model.dart';
 
 class TodoService {
-  final String baseUrl = 'http://192.168.1.105:8080/api';
+  final String baseUrl = 'http://192.168.66.43:8080/api';
 
   Future<List<Todo>> getTodos() async {
     final response = await http.get(Uri.parse('$baseUrl/addTodo'));

@@ -33,9 +33,18 @@ class TaskListWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(todo.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    todo.title ?? 'No Title',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 4),
-                  Text(todo.description),
+                  Text(todo.description ?? 'No Description'),
+                  const SizedBox(height: 4),
+                  Text('Status: ${todo.status ?? 'Unknown'}'),
+                  Text('Start Date: ${todo.startDate ?? 'Not set'}'),
+                  Text('Start Time: ${todo.startTime ?? 'Not set'}'),
+                  Text('Importance: ${todo.importance ?? 'Not set'}'),
+                  Text('Type: ${todo.type ?? 'Not set'}'),
                 ],
               ),
             ),

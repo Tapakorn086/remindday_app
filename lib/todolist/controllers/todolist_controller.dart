@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+
 import '../models/todolist_model.dart';
 import '../services/todolist_service.dart';
 
@@ -22,12 +27,24 @@ class RemindDayListController {
     return List.generate(7, (index) => centerDate.subtract(Duration(days: 3 - index)));
   }
 
-  Future<List<Todo>> fetchTodos() async {
+  Future<List<Todo>> fetchTodos(String deviceId) async {
+    debugPrint("==========$deviceId");
     try {
-      return await _todoService.fetchTodos();
+      return await _todoService.fetchTodos(deviceId);
     } catch (e) {
       print('Error fetching todos: $e');
       return [];
     }
+  }
+   Future<String?> getDeviceId() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.id;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      return iosInfo.identifierForVendor;
+    }
+    return null;
   }
 }

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:remindday_app/user/models/user_model.dart';
 
 class UserService {
-  final String apiUrl = "http://192.168.1.105:8080/api/user/register";
+  final String apiUrl = "http://192.168.66.43:8080/api/user/register";
   Future<Map<String, int>> saveUser(User user) async {
     final response = await http.post(
       Uri.parse(apiUrl),

@@ -5,7 +5,7 @@ import '../models/group_model.dart';
 import 'package:http/http.dart' as http;
 
 class GroupService {
-  final String apiUrl = 'http://192.168.1.105:8080/api/group';
+  final String apiUrl = 'http://192.168.66.43:8080/api/group';
 
   Future<List<Group>> getGroupsByUserId(int userId) async {
     final response =

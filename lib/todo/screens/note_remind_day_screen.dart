@@ -153,11 +153,14 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm() async  {
     if (_formKey.currentState!.validate()) {
+          String? idDevice = await _todoController.getidDevice();
+
       final newTodo = ModelTodo.Todo(
         title: _titleController.text,
         description: _descriptionController.text,
+        idDevice: idDevice.toString(),
         type: _selectedType!,
         importance: _selectedImportance!,
         startDate: _selectedStartDate!,

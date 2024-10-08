@@ -5,7 +5,7 @@ import 'dart:convert';
 
 class AuthService {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  final String _loginUrl = 'http://192.168.1.105:8080/api/login/sessionlogin';
+  final String _loginUrl = 'http://192.168.66.43:8080/api/login/sessionlogin';
 
   Future<bool> isLoggedIn() async {
     String? token = await _storage.read(key: 'token');

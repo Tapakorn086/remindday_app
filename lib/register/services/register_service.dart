@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class RegisterService {
   // final String apiUrl = 'http://10.0.0.0.2:8080/api/register';
-  final String apiUrl = 'http://192.168.1.105:8080/api/login/registerlogin';
+  final String apiUrl = 'http://192.168.66.43:8080/api/login/registerlogin';
 
   Future<bool> register(String email, String password) async {
 

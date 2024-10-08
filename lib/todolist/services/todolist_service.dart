@@ -7,17 +7,21 @@ import '../models/todolist_model.dart';
 class TodoService {
   static const String _baseUrl = 'http://192.168.66.43:8080/api';
 
+  static const Map<String, String> _headers = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Accept': 'application/json',
+  };
+
   Future<List<Todo>> fetchTodos(String idDevice, DateTime date) async {
     final formattedDate = DateFormat('yyyy-MM-dd').format(date);
-    debugPrint("===== date: $formattedDate");
-    debugPrint("===== deviceId: $idDevice");
-    final response = await http.get(Uri.parse(
-        '$_baseUrl/gettodo?startDate=$formattedDate&idDevice=$idDevice'));
-
-    debugPrint("===== response: $response");
+    final response = await http.get(
+        Uri.parse(
+            '$_baseUrl/gettodo?startDate=$formattedDate&idDevice=$idDevice'),
+        headers: _headers);
 
     if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
+      String decodedBody = utf8.decode(response.bodyBytes);
+      List jsonResponse = json.decode(decodedBody);
       return jsonResponse.map((todo) => Todo.fromJson(todo)).toList();
     } else {
       throw Exception('Failed to load todos');
@@ -27,7 +31,7 @@ class TodoService {
   Future<void> updateTodoStatus(Todo todo, String idDevice) async {
     final response = await http.put(
       Uri.parse('$_baseUrl/updatetodo/${todo.id}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers,
       body: json.encode({'status': todo.status, 'idDevice': idDevice}),
     );
 

@@ -7,9 +7,15 @@ import 'package:http/http.dart' as http;
 class GroupService {
   final String apiUrl = 'http://192.168.66.43:8080/api/group';
 
+  static const Map<String, String> _headers = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Accept': 'application/json',
+  };
+
   Future<List<Group>> getGroupsByUserId(int userId) async {
     final response =
-        await http.get(Uri.parse('$apiUrl/getGroupByUserId/$userId'));
+        await http.get(Uri.parse('$apiUrl/getGroupByUserId/$userId'),
+        headers: _headers);
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       return jsonData.map((group) => Group.fromJson(group)).toList();

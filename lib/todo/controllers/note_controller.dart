@@ -11,14 +11,6 @@ class TodoController extends ChangeNotifier {
 
   List<Todo> get todos => _todos;
 
-  Future<void> fetchTodos() async {
-    try {
-      _todos = await _todoService.getTodos();
-      notifyListeners();
-    } catch (e) {
-      // Handle error
-    }
-  }
 
   Future<void> addTodo(Todo todo) async {
     debugPrint("data: $todo");

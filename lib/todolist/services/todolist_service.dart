@@ -17,11 +17,13 @@ class TodoService {
     }
   }
 
-  Future<void> updateTodoStatus(Todo todo) async {
+  Future<void> updateTodoStatus(Todo todo,String idDevice) async {
     final response = await http.put(
       Uri.parse('$_baseUrl/updatetodo/${todo.id}'),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({'status': todo.status}),
+      body: json.encode({'status': todo.status,'idDevice':idDevice
+      
+      }),
     );
 
     if (response.statusCode != 200) {

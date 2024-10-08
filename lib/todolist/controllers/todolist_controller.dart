@@ -29,7 +29,7 @@ class RemindDayListController {
     try {
       return await _todoService.fetchTodos(deviceId);
     } catch (e) {
-      print('Error fetching todos: $e');
+      debugPrint('Error fetching todos: $e');
       return [];
     }
   }
@@ -47,10 +47,11 @@ class RemindDayListController {
   }
 
   Future<void> updateTodoStatus(Todo todo) async {
+    var idDevice = await getDeviceId();
     try {
-      await _todoService.updateTodoStatus(todo);
+      await _todoService.updateTodoStatus(todo,idDevice.toString());
     } catch (e) {
-      print('Error updating todo status: $e');
+      debugPrint('Error updating todo status: $e');
       throw e;
     }
   }

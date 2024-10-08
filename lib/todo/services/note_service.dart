@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:remindday_app/config/config.dart';
 
 import '../models/note_model.dart';
 
 class TodoService {
-  final String baseUrl = 'http://192.168.66.43:8080/api';
+  final String baseUrl = AppConfig.baseUrl;
 
   Future<Todo> createTodo(Todo todo) async {
     debugPrint("data: START CREATE DOTO");

@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:remindday_app/config/config.dart';
 import 'package:remindday_app/user/models/user_model.dart';
 
 class UserService {
-  final String apiUrl = "http://192.168.66.43:8080/api/user/register";
+    static const String _baseUrl = AppConfig.baseUrl;
+  final String apiUrl = "$_baseUrl/user/register";
   Future<Map<String, int>> saveUser(User user) async {
     final response = await http.post(
       Uri.parse(apiUrl),

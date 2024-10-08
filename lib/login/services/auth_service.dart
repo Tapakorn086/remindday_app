@@ -3,9 +3,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:remindday_app/config/config.dart';
+
 class AuthService {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  final String _loginUrl = 'http://192.168.66.43:8080/api/login/sessionlogin';
+  static const String _baseUrl = AppConfig.baseUrl;
+  final String _loginUrl = '$_baseUrl/login/sessionlogin';
 
   Future<bool> isLoggedIn() async {
     String? token = await _storage.read(key: 'token');

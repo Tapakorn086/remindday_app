@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:remindday_app/config/config.dart';
 
 class RegisterService {
-  // final String apiUrl = 'http://10.0.0.0.2:8080/api/register';
-  final String apiUrl = 'http://192.168.66.43:8080/api/login/registerlogin';
+  static const String _baseUrl = AppConfig.baseUrl;
+  final String apiUrl = '$_baseUrl/api/login/registerlogin';
 
   Future<bool> register(String email, String password) async {
 

@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:remindday_app/config/config.dart';
 import '../models/todolist_model.dart';
 
 class TodoService {
-  static const String _baseUrl = 'http://192.168.66.43:8080/api';
+  static const String _baseUrl = AppConfig.baseUrl;
 
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json; charset=UTF-8',

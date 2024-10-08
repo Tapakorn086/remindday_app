@@ -22,12 +22,14 @@ class RemindDayListController {
   }
 
   List<DateTime> _generateWeekDays(DateTime centerDate) {
-    return List.generate(7, (index) => centerDate.subtract(Duration(days: 3 - index)));
+    return List.generate(
+        7, (index) => centerDate.subtract(Duration(days: 3 - index)));
   }
 
-  Future<List<Todo>> fetchTodos(String deviceId) async {
+  Future<List<Todo>> fetchTodos(
+      {required String deviceId, required DateTime date}) async {
     try {
-      return await _todoService.fetchTodos(deviceId);
+      return await _todoService.fetchTodos(deviceId, date);
     } catch (e) {
       debugPrint('Error fetching todos: $e');
       return [];
@@ -49,7 +51,7 @@ class RemindDayListController {
   Future<void> updateTodoStatus(Todo todo) async {
     var idDevice = await getDeviceId();
     try {
-      await _todoService.updateTodoStatus(todo,idDevice.toString());
+      await _todoService.updateTodoStatus(todo, idDevice.toString());
     } catch (e) {
       debugPrint('Error updating todo status: $e');
       throw e;

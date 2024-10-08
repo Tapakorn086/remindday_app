@@ -41,17 +41,32 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     }).toList();
   }
 
-  void _loadTodos() async {
-    final todos = await _controller.fetchTodos(deviceId.toString());
+  Future<void> _loadTodos() async {
+  if (deviceId == null) {
+    debugPrint("Device ID is null");
+    return;
+  }
+  
+  try {
+    final todos = await _controller.fetchTodos(
+      deviceId: deviceId.toString(),
+      date: _controller.selectedDate,
+    );
     setState(() {
       _todos = todos;
     });
+  } catch (e) {
+    debugPrint("Error fetching todos: $e");
   }
+}
 
-  void _onDateSelected(DateTime date) {
+  
+
+  void _onDateSelected(DateTime date) async {
     setState(() {
       _controller.selectedDate = date;
     });
+    await _loadTodos();
   }
 
 void _onAddTask() async {

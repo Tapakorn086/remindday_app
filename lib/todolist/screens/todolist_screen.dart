@@ -31,6 +31,16 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     }
   }
 
+  List<Todo> _getFilteredTodos() {
+    return _todos.where((todo) {
+      if (todo.startDate == null) return false;
+      DateTime todoDate = DateTime.parse(todo.startDate!);
+      return todoDate.year == _controller.selectedDate.year &&
+          todoDate.month == _controller.selectedDate.month &&
+          todoDate.day == _controller.selectedDate.day;
+    }).toList();
+  }
+
   void _loadTodos() async {
     final todos = await _controller.fetchTodos(deviceId.toString());
     setState(() {
@@ -44,7 +54,7 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     });
   }
 
-  void _onAddTask() async{
+  void _onAddTask() async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const NoteRemindDayScreen()),
@@ -64,11 +74,13 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
       setState(() {
         todo.status = todo.status == 'completed' ? 'pending' : 'completed';
       });
-    } 
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Todo> filteredTodos = _getFilteredTodos();
+
     return Scaffold(
       appBar: AppBar(
         title:
@@ -85,7 +97,7 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
           ),
           CurrentTaskWidget(onAddTask: _onAddTask),
           TaskListWidget(
-            todos: _todos,
+            todos: filteredTodos,
             onTodoStatusChanged: updateTodoStatus,
           ),
         ],

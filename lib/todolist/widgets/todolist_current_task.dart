@@ -12,7 +12,7 @@ class CurrentTaskWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('กำลังทำอยู่', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text('กำลังทำอยู่', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -50,7 +50,7 @@ class CurrentTaskWidget extends StatelessWidget {
             children: [
               const Text(
                 'วันนี้ทำอะไรดี ',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
               IconButton(
                 icon: const Icon(Icons.add, color: Colors.black),

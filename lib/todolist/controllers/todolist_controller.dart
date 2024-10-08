@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-
 import '../models/todolist_model.dart';
 import '../services/todolist_service.dart';
 
@@ -28,7 +26,6 @@ class RemindDayListController {
   }
 
   Future<List<Todo>> fetchTodos(String deviceId) async {
-    debugPrint("==========$deviceId");
     try {
       return await _todoService.fetchTodos(deviceId);
     } catch (e) {
@@ -36,7 +33,8 @@ class RemindDayListController {
       return [];
     }
   }
-   Future<String?> getDeviceId() async {
+
+  Future<String?> getDeviceId() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -46,5 +44,14 @@ class RemindDayListController {
       return iosInfo.identifierForVendor;
     }
     return null;
+  }
+
+  Future<void> updateTodoStatus(Todo todo) async {
+    try {
+      await _todoService.updateTodoStatus(todo);
+    } catch (e) {
+      print('Error updating todo status: $e');
+      throw e;
+    }
   }
 }

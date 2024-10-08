@@ -2,7 +2,7 @@ class Todo {
   final int? id;
   final String? title;
   final String? description;
-  final String? status;
+  String? status;
   final String? idDevice;
   final String? startDate;
   final String? startTime;

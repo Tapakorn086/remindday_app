@@ -50,6 +50,9 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
       MaterialPageRoute(builder: (context) => const NoteRemindDayScreen()),
     );
   }
+  void updateTodoStatus(Todo todo) async {
+  setState(() {});
+}
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +70,7 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
             onDateSelected: _onDateSelected,
           ),
           CurrentTaskWidget(onAddTask: _onAddTask),
-          TaskListWidget(todos: _todos),
+          TaskListWidget(todos: _todos,onTodoStatusChanged: updateTodoStatus,),
         ],
       ),
     );

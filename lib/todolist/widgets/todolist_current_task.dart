@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CurrentTaskWidget extends StatelessWidget {
   final VoidCallback onAddTask;
 
-  const CurrentTaskWidget({Key? key, required this.onAddTask}) : super(key: key);
+  const CurrentTaskWidget({Key? key, required this.onAddTask})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,8 @@ class CurrentTaskWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('กำลังทำอยู่', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+          const Text('กำลังทำอยู่',
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -31,13 +33,15 @@ class CurrentTaskWidget extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {},
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pink[100]),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink[100]),
                     child: const Text('เริ่มทำงาน'),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {},
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green[100]),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[100]),
                     child: const Text('เสร็จแล้ว'),
                   ),
                 ],
@@ -53,8 +57,10 @@ class CurrentTaskWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
               IconButton(
-                icon: const Icon(Icons.add, color: Colors.black),
-                onPressed: onAddTask, // เมื่อกดปุ่มนี้ จะเรียกใช้ฟังก์ชัน onAddTask ที่ส่งมาจาก RemindDayListScreen
+                icon: const Icon(Icons.add,
+                    color: Colors.black, size: 30),
+                onPressed:
+                    onAddTask,
               ),
             ],
           ),

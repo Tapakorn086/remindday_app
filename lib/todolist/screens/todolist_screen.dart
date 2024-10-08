@@ -50,15 +50,24 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
       MaterialPageRoute(builder: (context) => const NoteRemindDayScreen()),
     );
   }
+
   void updateTodoStatus(Todo todo) async {
-  setState(() {});
-}
+    try {
+      await _controller.updateTodoStatus(todo);
+    } catch (e) {
+      debugPrint('Error updating todo status: $e');
+      setState(() {
+        todo.status = todo.status == 'completed' ? 'pending' : 'completed';
+      });
+    } 
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RemindDay List', style: TextStyle(color: Colors.black)),
+        title:
+            const Text('RemindDay List', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -70,7 +79,10 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
             onDateSelected: _onDateSelected,
           ),
           CurrentTaskWidget(onAddTask: _onAddTask),
-          TaskListWidget(todos: _todos,onTodoStatusChanged: updateTodoStatus,),
+          TaskListWidget(
+            todos: _todos,
+            onTodoStatusChanged: updateTodoStatus,
+          ),
         ],
       ),
     );

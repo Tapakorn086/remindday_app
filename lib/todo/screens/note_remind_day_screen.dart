@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remindday_app/main.dart';
 import 'package:remindday_app/todolist/screens/todolist_screen.dart';
 import '../controllers/note_controller.dart';
 import '../models/note_model.dart' as ModelTodo;
@@ -153,9 +154,9 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
     );
   }
 
-  void _submitForm() async  {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-          String? idDevice = await _todoController.getidDevice();
+      String? idDevice = await _todoController.getidDevice();
 
       final newTodo = ModelTodo.Todo(
         title: _titleController.text,
@@ -175,9 +176,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
         const SnackBar(content: Text('Todo added successfully')),
       );
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => TodoDayListScreen()),
-      );
+      Navigator.of(context).pop(true);
     }
   }
 }

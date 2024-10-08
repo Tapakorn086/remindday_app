@@ -44,11 +44,16 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     });
   }
 
-  void _onAddTask() {
-    Navigator.push(
+  void _onAddTask() async{
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const NoteRemindDayScreen()),
     );
+    if (result == true) {
+      setState(() {
+        _loadTodos();
+      });
+    }
   }
 
   void updateTodoStatus(Todo todo) async {

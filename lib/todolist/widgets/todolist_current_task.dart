@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class CurrentTaskWidget extends StatelessWidget {
   final VoidCallback onAddTask;
 
-  const CurrentTaskWidget({Key? key, required this.onAddTask})
-      : super(key: key);
+  const CurrentTaskWidget({super.key, required this.onAddTask});
 
   @override
   Widget build(BuildContext context) {

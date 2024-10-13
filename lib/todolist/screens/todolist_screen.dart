@@ -54,11 +54,7 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
         deviceId: deviceId.toString(),
         date: _controller.selectedDate,
       );
-      debugPrint("Fetched ${todos.length} todos");
-      
-      debugPrint("Fetching current todos");
       final currentTodos = await _controller.fetchCurrentTodo(todos);
-      debugPrint("Fetched ${currentTodos.length} current todos");
 
       setState(() {
         _todos = todos;

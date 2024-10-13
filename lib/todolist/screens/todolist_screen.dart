@@ -125,7 +125,10 @@ void _onAddTask() async {
             selectedDate: _controller.selectedDate,
             onDateSelected: _onDateSelected,
           ),
-          CurrentTaskWidget(onAddTask: _onAddTask),
+          CurrentTaskWidget(
+             onAddTask: _onAddTask,
+            todos: filteredTodos, // ส่ง todos ทั้งหมด
+          ),
           TaskListWidget(
             todos: filteredTodos,
             onTodoStatusChanged: updateTodoStatus,

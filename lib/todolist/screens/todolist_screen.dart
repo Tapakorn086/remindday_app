@@ -49,7 +49,6 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     }
 
     try {
-      debugPrint("Fetching todos for date: ${_controller.selectedDate}");
       final todos = await _controller.fetchTodos(
         deviceId: deviceId.toString(),
         date: _controller.selectedDate,

@@ -4,8 +4,8 @@ import 'login/services/auth_service.dart';
 import 'todolist/screens/todolist_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-void main()async {
-    await initializeDateFormatting('th', null);
+void main() async {
+  await initializeDateFormatting('th', null);
   runApp(const MyApp());
 }
 
@@ -34,7 +34,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0; // เก็บสถานะของแท็บที่ถูกเลือก
   final AuthService _authService = AuthService();
-  
+
   final List<Widget> _screens = [
     TodoDayListScreen(),
     CalendarScreen(),
@@ -42,14 +42,14 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; 
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex], 
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 30,
         selectedFontSize: 16,
@@ -64,8 +64,8 @@ class _MainScreenState extends State<MainScreen> {
             label: 'ปฏิทิน',
           ),
         ],
-        currentIndex: _selectedIndex, 
-        onTap: _onItemTapped, 
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

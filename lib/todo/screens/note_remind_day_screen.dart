@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:remindday_app/main.dart';
-import 'package:remindday_app/todolist/screens/todolist_screen.dart';
 import '../controllers/note_controller.dart';
-import '../models/note_model.dart' as ModelTodo;
-import '../widgets/custom_dropdown.dart';
-import '../widgets/custom_text_field.dart';
+import '../models/note_model.dart' as modeltodo;
 
 class NoteRemindDayScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -23,23 +19,19 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
-  String? _selectedType;
-  String? _selectedImportance;
-  String? _selectedStartTime;
-  String? _selectedNotifyMinutes;
+  String _selectedType = 'เลือกประเภท';
+  String _selectedImportance = 'เลือกระดับความสำคัญ';
+  String _selectedStartTime = 'เลือกเวลาแจ้งเตือน';
+  String _selectedNotifyMinutes = 'เลือกเวลาเตือนก่อนกิจกรรม';
   DateTime? _selectedStartDate;
 
-  List<String> _generateTimeList() {
-    return List.generate(24, (index) => '${index.toString().padLeft(2, '0')}:00');
-  }
+  bool _autoValidate = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedType = 'เลือกประเภท';
-    _selectedImportance = 'เลือกระดับความสำคัญ';
-    _selectedStartTime = 'เลือกเวลาแจ้งเตือน';
-    _selectedNotifyMinutes = 'เลือกเวลาเตือนก่อนกิจกรรม';
+    _selectedStartDate = widget.selectedDate;
+    _dateController.text = "${_selectedStartDate!.day}/${_selectedStartDate!.month}/${_selectedStartDate!.year}";
   }
 
   @override
@@ -48,6 +40,10 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
     _descriptionController.dispose();
     _dateController.dispose();
     super.dispose();
+  }
+
+  List<String> _generateTimeList() {
+    return List.generate(24, (index) => '${index.toString().padLeft(2, '0')}:00');
   }
 
   @override
@@ -75,6 +71,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
             padding: const EdgeInsets.all(24.0),
             child: Form(
               key: _formKey,
+              autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -82,7 +79,12 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     label: 'ชื่องาน',
                     controller: _titleController,
                     icon: Icons.title,
-                    validator: (value) => value?.isEmpty ?? true ? '' : null,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'กรุณากรอกชื่องาน';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
@@ -96,7 +98,11 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     label: 'ประเภท',
                     items: ['เลือกประเภท', 'เรียน', 'งาน', 'อื่นๆ'],
                     value: _selectedType,
-                    onChanged: (value) => setState(() => _selectedType = value),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedType = value);
+                      }
+                    },
                     icon: Icons.category,
                     validator: _validateDropdown,
                   ),
@@ -105,7 +111,11 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     label: 'ระดับความสำคัญ',
                     items: ['เลือกระดับความสำคัญ', 'สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'],
                     value: _selectedImportance,
-                    onChanged: (value) => setState(() => _selectedImportance = value),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedImportance = value);
+                      }
+                    },
                     icon: Icons.priority_high,
                     validator: _validateDropdown,
                   ),
@@ -114,7 +124,11 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     label: 'เวลาที่ต้องการให้แจ้งเตือน',
                     items: ['เลือกเวลาแจ้งเตือน', ..._generateTimeList()],
                     value: _selectedStartTime,
-                    onChanged: (value) => setState(() => _selectedStartTime = value),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedStartTime = value);
+                      }
+                    },
                     icon: Icons.access_time,
                     validator: _validateDropdown,
                   ),
@@ -123,7 +137,11 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     label: 'เวลาเตือนก่อนกิจกรรมเริ่ม',
                     items: ['เลือกเวลาเตือนก่อนกิจกรรม', '5 นาที', '10 นาที', '15 นาที', '30 นาที', '1 ชั่วโมง'],
                     value: _selectedNotifyMinutes,
-                    onChanged: (value) => setState(() => _selectedNotifyMinutes = value),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedNotifyMinutes = value);
+                      }
+                    },
                     icon: Icons.notifications,
                     validator: _validateDropdown,
                   ),
@@ -135,8 +153,8 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     onTap: () async {
                       final pickedDate = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
+                        initialDate: _selectedStartDate ?? DateTime.now(),
+                        firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
                       if (pickedDate != null) {
@@ -147,7 +165,12 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                       }
                     },
                     icon: Icons.calendar_today,
-                    validator: (value) => value?.isEmpty ?? true ? '' : null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'กรุณาเลือกวันที่';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton(
@@ -208,16 +231,6 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
           filled: true,
           fillColor: Colors.white,
           errorStyle: const TextStyle(height: 0),
-          suffixIcon: validator != null
-              ? FormFieldValidator<String>(
-                  validator: validator,
-                  builder: (FormFieldState<String> state) {
-                    return state.hasError
-                        ? const Icon(Icons.error_outline, color: Colors.red)
-                        : const SizedBox.shrink();
-                  },
-                )
-              : null,
         ),
         validator: validator,
       ),
@@ -227,7 +240,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
   Widget _buildDropdown({
     required String label,
     required List<String> items,
-    required String? value,
+    required String value,
     required void Function(String?) onChanged,
     required IconData icon,
     String? Function(String?)? validator,
@@ -245,73 +258,61 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
           ),
         ],
       ),
-      child: FormField<String>(
-        validator: validator,
-        builder: (FormFieldState<String> state) {
-          return InputDecorator(
-            decoration: InputDecoration(
-              labelText: label,
-              prefixIcon: Icon(icon, color: Colors.deepPurple),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              errorStyle: const TextStyle(height: 0),
-              suffixIcon: state.hasError
-                  ? const Icon(Icons.error_outline, color: Colors.red)
-                  : null,
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: value,
-                isDense: true,
-                onChanged: (String? newValue) {
-                  onChanged(newValue);
-                  state.didChange(newValue);
-                },
-                items: items.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-              ),
-            ),
+      child: DropdownButtonFormField<String>(
+        value: value,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: Colors.deepPurple),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+        items: items.map((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item),
           );
-        },
+        }).toList(),
+        onChanged: onChanged,
+        validator: validator,
       ),
     );
   }
 
   String? _validateDropdown(String? value) {
     if (value == null || ['เลือกประเภท', 'เลือกระดับความสำคัญ', 'เลือกเวลาแจ้งเตือน', 'เลือกเวลาเตือนก่อนกิจกรรม'].contains(value)) {
-      return '';
+      return 'กรุณาเลือกข้อมูล';
     }
     return null;
   }
 
   void _submitForm() async {
+    setState(() {
+      _autoValidate = true;
+    });
+    
     if (_formKey.currentState!.validate()) {
       String? idDevice = await _todoController.getidDevice();
 
-      final newTodo = ModelTodo.Todo(
+      final newTodo = modeltodo.Todo(
         title: _titleController.text,
         description: _descriptionController.text,
         idDevice: idDevice.toString(),
-        type: _selectedType!,
-        importance: _selectedImportance!,
+        type: _selectedType,
+        importance: _selectedImportance,
         startDate: _selectedStartDate!,
         startTime: TimeOfDay(
-          hour: int.parse(_selectedStartTime!.split(':')[0]),
+          hour: int.parse(_selectedStartTime.split(':')[0]),
           minute: 0,
         ),
-        notifyMinutesBefore: _parseNotifyMinutes(_selectedNotifyMinutes!),
+        notifyMinutesBefore: _parseNotifyMinutes(_selectedNotifyMinutes),
         status: 'Pending',
       );
 
-      _todoController.addTodo(newTodo);
+      await _todoController.addTodo(newTodo);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -343,24 +344,5 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
       default:
         return 0;
     }
-  }
-}
-
-class FormFieldValidator<T> extends StatelessWidget {
-  final String? Function(T?) validator;
-  final Widget Function(FormFieldState<T>) builder;
-
-  const FormFieldValidator({
-    Key? key,
-    required this.validator,
-    required this.builder,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FormField<T>(
-      validator: validator,
-      builder: builder,
-    );
   }
 }

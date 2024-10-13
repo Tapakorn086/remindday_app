@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/todolist_model.dart';
 import '../services/todolist_service.dart';
 
@@ -30,12 +31,34 @@ class RemindDayListController {
   Future<List<Todo>> fetchTodos(
       {required String deviceId, required DateTime date}) async {
     try {
-      return await _todoService.fetchTodos(deviceId, date);
+      final data = await _todoService.fetchTodos(deviceId, date);
+      return data;
     } catch (e) {
       debugPrint('Error fetching todos: $e');
       return [];
     }
   }
+
+Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
+  final now = DateTime.now();
+  final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  List<Todo> filteredTodos = [];
+
+  for (var todo in data) {
+    if (todo.status?.toLowerCase() == 'pending') {
+      final startDateTime = dateFormat.parse("${todo.startDate} ${todo.startTime}");
+      final differenceInHours = startDateTime.difference(now).inHours;
+
+      if (differenceInHours <= 6 && differenceInHours >= 0) {
+        debugPrint("Todo item '${todo.title}' is pending and starts within the next 6 hours.");
+        filteredTodos.add(todo); 
+      }
+    }
+  }
+  return filteredTodos;
+}
+
 //fetchcurrent
   Future<String?> getDeviceId() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

@@ -60,13 +60,6 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
         _todos = todos;
         _currentTodos = currentTodos;
       });
-
-      debugPrint("Updated state: ${_todos.length} todos, ${_currentTodos.length} current todos");
-      
-      // Debug: แสดงรายละเอียดของ current todos
-      for (var todo in _currentTodos) {
-        debugPrint("Current Todo: ${todo.title}, Status: ${todo.status}, Start Date: ${todo.startDate}, Start Time: ${todo.startTime}");
-      }
     } catch (e) {
       debugPrint("Error fetching todos: $e");
     }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../controllers/note_controller.dart';
+import '../widgets/custom_dropdown.dart';
+import '../widgets/custom_text_field.dart';
 import '../models/note_model.dart' as modeltodo;
 
 class NoteRemindDayScreen extends StatefulWidget {
   final DateTime selectedDate;
 
-  const NoteRemindDayScreen({Key? key, required this.selectedDate}) : super(key: key);
+  const NoteRemindDayScreen({super.key, required this.selectedDate});
 
   @override
   _NoteRemindDayScreenState createState() => _NoteRemindDayScreenState();
@@ -75,7 +77,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildTextField(
+                  CustomTextField(
                     label: 'ชื่องาน',
                     controller: _titleController,
                     icon: Icons.title,
@@ -87,66 +89,82 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(
+                  CustomTextField(
                     label: 'เพิ่มรายละเอียด',
                     controller: _descriptionController,
                     maxLines: 3,
                     icon: Icons.description,
                   ),
                   const SizedBox(height: 20),
-                  _buildDropdown(
-                    label: 'ประเภท',
-                    items: ['เลือกประเภท', 'เรียน', 'งาน', 'อื่นๆ'],
-                    value: _selectedType,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _selectedType = value);
-                      }
-                    },
-                    icon: Icons.category,
-                    validator: _validateDropdown,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomDropdown(
+                          label: 'ประเภท',
+                          items: const ['เลือกประเภท', 'เรียน', 'งาน', 'อื่นๆ'],
+                          value: _selectedType,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() => _selectedType = value);
+                            }
+                          },
+                          icon: Icons.category,
+                          validator: _validateDropdown,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: CustomDropdown(
+                          label: 'ระดับความสำคัญ',
+                          items: const ['เลือกระดับความสำคัญ', 'สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'],
+                          value: _selectedImportance,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() => _selectedImportance = value);
+                            }
+                          },
+                          icon: Icons.priority_high,
+                          validator: _validateDropdown,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
-                  _buildDropdown(
-                    label: 'ระดับความสำคัญ',
-                    items: ['เลือกระดับความสำคัญ', 'สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'],
-                    value: _selectedImportance,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _selectedImportance = value);
-                      }
-                    },
-                    icon: Icons.priority_high,
-                    validator: _validateDropdown,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomDropdown(
+                          label: 'เวลาที่ต้องการให้แจ้งเตือน',
+                          items: ['เลือกเวลาแจ้งเตือน', ..._generateTimeList()],
+                          value: _selectedStartTime,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() => _selectedStartTime = value);
+                            }
+                          },
+                          icon: Icons.access_time,
+                          validator: _validateDropdown,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: CustomDropdown(
+                          label: 'เวลาเตือนก่อนกิจกรรมเริ่ม',
+                          items: const ['เลือกเวลาเตือนก่อนกิจกรรม', '5 นาที', '10 นาที', '15 นาที', '30 นาที', '1 ชั่วโมง'],
+                          value: _selectedNotifyMinutes,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() => _selectedNotifyMinutes = value);
+                            }
+                          },
+                          icon: Icons.notifications,
+                          validator: _validateDropdown,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
-                  _buildDropdown(
-                    label: 'เวลาที่ต้องการให้แจ้งเตือน',
-                    items: ['เลือกเวลาแจ้งเตือน', ..._generateTimeList()],
-                    value: _selectedStartTime,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _selectedStartTime = value);
-                      }
-                    },
-                    icon: Icons.access_time,
-                    validator: _validateDropdown,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildDropdown(
-                    label: 'เวลาเตือนก่อนกิจกรรมเริ่ม',
-                    items: ['เลือกเวลาเตือนก่อนกิจกรรม', '5 นาที', '10 นาที', '15 นาที', '30 นาที', '1 ชั่วโมง'],
-                    value: _selectedNotifyMinutes,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _selectedNotifyMinutes = value);
-                      }
-                    },
-                    icon: Icons.notifications,
-                    validator: _validateDropdown,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildTextField(
+                  CustomTextField(
                     label: 'เลือกวันที่จะแจ้งเตือน',
                     controller: _dateController,
                     readOnly: true,
@@ -194,94 +212,6 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
     );
   }
 
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    int maxLines = 1,
-    bool readOnly = false,
-    VoidCallback? onTap,
-    required IconData icon,
-    String? Function(String?)? validator,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        maxLines: maxLines,
-        readOnly: readOnly,
-        onTap: onTap,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: Colors.deepPurple),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          errorStyle: const TextStyle(height: 0),
-        ),
-        validator: validator,
-      ),
-    );
-  }
-
-  Widget _buildDropdown({
-    required String label,
-    required List<String> items,
-    required String value,
-    required void Function(String?) onChanged,
-    required IconData icon,
-    String? Function(String?)? validator,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: Colors.deepPurple),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: onChanged,
-        validator: validator,
-      ),
-    );
-  }
-
   String? _validateDropdown(String? value) {
     if (value == null || ['เลือกประเภท', 'เลือกระดับความสำคัญ', 'เลือกเวลาแจ้งเตือน', 'เลือกเวลาเตือนก่อนกิจกรรม'].contains(value)) {
       return 'กรุณาเลือกข้อมูล';
@@ -314,18 +244,20 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
 
       await _todoController.addTodo(newTodo);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('เพิ่มรายการสำเร็จ'),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+      if (mounted) { 
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('เพิ่มรายการสำเร็จ'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-        ),
-      );
+        );
 
-      Navigator.of(context).pop(true);
+        Navigator.of(context).pop(true);
+      }
     }
   }
 

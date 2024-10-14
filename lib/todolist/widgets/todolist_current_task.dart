@@ -51,14 +51,27 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     int totalMinutes = difference.inMinutes;
 
     if (totalMinutes > 360) {
-      return "ยังไม่มีงานที่ต้องทำ";
+      return "ยังไม่ถึงเวลาเริ่มงาน";
     } else if (totalMinutes <= 360 && totalMinutes > notifyBeforeStart!) {
-      return "งาน $title จะเริ่มในอีก $totalMinutes นาที";
+      if (totalMinutes > 60) {
+        int hours = totalMinutes ~/ 60;
+        int minutes = totalMinutes % 60;
+        return "งาน $title จะเริ่มในอีก $hours ชั่วโมง $minutes นาที";
+      } else {
+        return "งาน $title จะเริ่มในอีก 1 ชั่วโมง";
+      }
     } else if (totalMinutes <= notifyBeforeStart! && totalMinutes > 0) {
       return "ใกล้จะถึงเวลาทำงาน $title จะเริ่มในอีก $totalMinutes นาที";
     } else {
       return "งาน [ $title ] เลยกำหนดการมาแล้ว";
     }
+  }
+
+  bool _shouldShowStartButton(DateTime startDateTime) {
+    DateTime timenow = DateTime.now();
+    Duration difference = startDateTime.difference(timenow);
+    int totalMinutes = difference.inMinutes;
+    return totalMinutes <= 360;
   }
 
   @override
@@ -97,7 +110,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
           child: Column(
             children: [
               const Text(
-                'ไม่มีงานปัจจุบัน',
+                'ไม่มีงานที่ต้องทำ',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -122,7 +135,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     );
   }
 
-  Widget _buildCurrentTaskCard() {
+    Widget _buildCurrentTaskCard() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
@@ -171,7 +184,14 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                if (widget.currentTask[0].status != 'working')
+                if (_shouldShowStartButton(DateTime(
+                      now.year,
+                      now.month,
+                      now.day,
+                      int.parse(widget.currentTask[0].startTime!.split(':')[0]),
+                      int.parse(widget.currentTask[0].startTime!.split(':')[1]),
+                    )) &&
+                    widget.currentTask[0].status != 'working')
                   ElevatedButton(
                     onPressed: () async {
                       setState(() {

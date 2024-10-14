@@ -78,21 +78,7 @@ Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
       await _todoService.updateTodoStatus(todo, idDevice.toString());
     } catch (e) {
       debugPrint('Error updating todo status: $e');
-      throw e;
+      rethrow;
     }
   }
-  //   // ฟังก์ชันใหม่สำหรับดึง Todo ปัจจุบันที่ใกล้เริ่ม
-  // Future<Todo?> fetchCurrentTodo(DateTime date, int notifyMinutesBefore) async {
-  //   List<Todo> todos = await fetchTodos(deviceId: (await getDeviceId()) ?? '', date: date);
-  //   DateTime now = DateTime.now();
-
-  //   // ค้นหา Todo ที่จะเริ่มต้นในอีก notifyMinutesBefore นาที
-  //   for (var todo in todos) {
-  //     DateTime startDateTime = DateTime.parse('${todo.startDate} ${todo.startTime}');
-  //     if (startDateTime.isAfter(now) && startDateTime.isBefore(now.add(Duration(minutes: notifyMinutesBefore)))) {
-  //       return todo; // คืนค่า Todo ที่จะเริ่มต้นในเวลาใกล้เคียง
-  //     }
-  //   }
-  //   return null; // ถ้าไม่มี Todo ที่ตรงตามเงื่อนไข
-  // }
 }

@@ -2,16 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:remindday_app/todolist/controllers/todolist_controller.dart';
 import '../models/todolist_model.dart';
-import '../services/todolist_service.dart';
 
 class CurrentTaskWidget extends StatefulWidget {
   final VoidCallback onAddTask;
   final List<Todo> currentTask;
+  final Function refreshTodos;
 
   const CurrentTaskWidget({
     super.key,
     required this.onAddTask,
     required this.currentTask,
+    required this.refreshTodos,
   });
 
   @override
@@ -144,7 +145,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
             Text(
               widget.currentTask[0].title.toString(),
               style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 19,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple),
             ),
@@ -171,8 +172,13 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () =>
-                      _controller.updateTodoStatus(widget.currentTask[0]),
+                  onPressed: () async {
+                    setState(()  {
+                      widget.currentTask[0].status = "working";
+                    });
+                    await _controller.updateTodoStatus(widget.currentTask[0]);
+                    widget.refreshTodos();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
                     shape: RoundedRectangleBorder(
@@ -183,8 +189,13 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
                       style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
-                  onPressed: () =>
-                      _controller.updateTodoStatus(widget.currentTask[0]),
+                  onPressed: () async {
+                    setState(() {
+                      widget.currentTask[0].status = "completed";
+                    });
+                    await _controller.updateTodoStatus(widget.currentTask[0]);
+                    widget.refreshTodos();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(

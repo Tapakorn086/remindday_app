@@ -5,12 +5,14 @@ import '../models/todolist_model.dart';
 class TaskListWidget extends StatefulWidget {
   final List<Todo> todos;
   final Function(Todo) onTodoStatusChanged;
+  final VoidCallback refreshTodos;
 
   const TaskListWidget({
-    Key? key,
+    super.key,
     required this.todos,
     required this.onTodoStatusChanged,
-  }) : super(key: key);
+    required this.refreshTodos,
+  });
 
   @override
   _TaskListWidgetState createState() => _TaskListWidgetState();
@@ -35,11 +37,13 @@ class _TaskListWidgetState extends State<TaskListWidget> {
   }
 
   void _sortAndSeparateTodos() {
-    List<Todo> sortedTodos = List.from(widget.todos)
-      ..sort((a, b) => (a.startTime ?? '').compareTo(b.startTime ?? ''));
-    
-    incompleteTodos = sortedTodos.where((todo) => todo.status != 'completed').toList();
-    completedTodos = sortedTodos.where((todo) => todo.status == 'completed').toList();
+    setState(() {
+      List<Todo> sortedTodos = List.from(widget.todos)
+        ..sort((a, b) => (a.startTime ?? '').compareTo(b.startTime ?? ''));
+      
+      incompleteTodos = sortedTodos.where((todo) => todo.status != 'completed').toList();
+      completedTodos = sortedTodos.where((todo) => todo.status == 'completed').toList();
+    });
   }
 
   @override
@@ -91,12 +95,10 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                 children: [
                   Checkbox(
                     value: todo.status == 'completed',
-                    onChanged: (bool? value) {
-                      setState(() {
-                        todo.status = value! ? 'completed' : 'pending';
-                      });
-                      widget.onTodoStatusChanged(todo);
-                      _sortAndSeparateTodos();
+                    onChanged: (bool? value) async {
+                      todo.status = value! ? 'completed' : 'pending';
+                      await widget.onTodoStatusChanged(todo);
+                      widget.refreshTodos();
                     },
                   ),
                   _buildTimeWidget(todo.startTime),

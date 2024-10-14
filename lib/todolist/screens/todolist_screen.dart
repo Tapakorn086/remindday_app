@@ -133,10 +133,12 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
           CurrentTaskWidget(
             onAddTask: _onAddTask,
             currentTask: _currentTodos,
+            refreshTodos: _loadTodos,
           ),
           TaskListWidget(
             todos: filteredTodos,
             onTodoStatusChanged: updateTodoStatus,
+            refreshTodos: _loadTodos,
           ),
         ],
       ),

@@ -46,7 +46,7 @@ Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
   List<Todo> filteredTodos = [];
 
   for (var todo in data) {
-    if (todo.status?.toLowerCase() == 'pending') {
+    if (todo.status?.toLowerCase() == 'pending' || todo.status?.toLowerCase() == 'working') {
       final startDateTime = dateFormat.parse("${todo.startDate} ${todo.startTime}");
       final differenceInHours = startDateTime.difference(now).inHours;
 

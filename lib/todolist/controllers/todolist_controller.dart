@@ -9,7 +9,6 @@ class RemindDayListController {
   final TodoService _todoService = TodoService();
   DateTime _selectedDate = DateTime.now();
   late List<DateTime> _weekDays;
-  
 
   RemindDayListController() {
     _weekDays = _generateWeekDays(_selectedDate);
@@ -39,57 +38,63 @@ class RemindDayListController {
     }
   }
 
-Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
-  final now = DateTime.now();
-  final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+  Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
+    final now = DateTime.now();
+    final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
-  List<Todo> filteredTodos = [];
+    List<Todo> filteredTodos = [];
 
-  for (var todo in data) {
-    if (todo.status?.toLowerCase() == 'pending' || todo.status?.toLowerCase() == 'working') {
-      final startDateTime = dateFormat.parse("${todo.startDate} ${todo.startTime}");
-      final differenceInHours = startDateTime.difference(now).inHours;
+    for (var todo in data) {
+      if (todo.status?.toLowerCase() == 'pending' ||
+          todo.status?.toLowerCase() == 'working') {
+        final startDateTime =
+            dateFormat.parse("${todo.startDate} ${todo.startTime}");
+        final differenceInHours = startDateTime.difference(now).inHours;
 
-      if (differenceInHours <= 6 && differenceInHours >= 0) {
-        debugPrint("Todo item '${todo.title}' is pending and starts within the next 6 hours.");
-        filteredTodos.add(todo); 
+        if (differenceInHours <= 6 && differenceInHours >= 0) {
+          // debugPrint(
+          //     "Todo item '${todo.title}' importance ${todo.importance}");
+          filteredTodos.add(todo);
+        }
       }
     }
-  }
 
-  // Sort filteredTodos based on startTime and importance
-  filteredTodos.sort((a, b) {
-    final aTime = DateFormat("HH:mm").parse(a.startTime.toString());
-    final bTime = DateFormat("HH:mm").parse(b.startTime.toString());
-    
-    int timeComparison = aTime.compareTo(bTime);
-    if (timeComparison != 0) {
-      return timeComparison;
+    filteredTodos.sort((a, b) {
+      final aTime = DateFormat("HH:mm").parse(a.startTime ?? "");
+      final bTime = DateFormat("HH:mm").parse(b.startTime ?? "");
+
+      int timeComparison = aTime.compareTo(bTime);
+      if (timeComparison != 0) {
+        return timeComparison;
+      }
+
+      return compareImportance(b.importance ?? "", a.importance ?? "");
+    });
+    for (var todo in filteredTodos) {
+      debugPrint("Todo item '${todo.title}' importance ${todo.importance}");
     }
-    
-    return compareImportance(b.importance.toString(), a.importance.toString()); 
-  });
 
-  return filteredTodos;
-}
-int compareImportance(String a, String b) {
-  const importanceLevels = ['สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'];
-  
-  if (importanceLevels.contains(a) && importanceLevels.contains(b)) {
-    return importanceLevels.indexOf(a) - importanceLevels.indexOf(b);
+    return filteredTodos;
   }
-  
-  if (importanceLevels.contains(a)) {
-    return -1;
+
+  int compareImportance(String a, String b) {
+    const importanceLevels = ['สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'];
+    if (a.isEmpty) return 1;
+    if (b.isEmpty) return -1;
+
+    if (importanceLevels.contains(a) && importanceLevels.contains(b)) {
+      return importanceLevels.indexOf(b) - importanceLevels.indexOf(a);
+    }
+
+    if (importanceLevels.contains(a)) {
+      return -1;
+    }
+
+    if (importanceLevels.contains(b)) {
+      return 1;
+    }
+    return b.compareTo(a);
   }
-  
-  if (importanceLevels.contains(b)) {
-    return 1; 
-  }
-  
-  return a.compareTo(b); 
-}
- 
 
 //fetchcurrent
   Future<String?> getDeviceId() async {

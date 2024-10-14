@@ -57,14 +57,39 @@ Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
     }
   }
 
+  // Sort filteredTodos based on startTime and importance
   filteredTodos.sort((a, b) {
     final aTime = DateFormat("HH:mm").parse(a.startTime.toString());
     final bTime = DateFormat("HH:mm").parse(b.startTime.toString());
-    return aTime.compareTo(bTime);
+    
+    int timeComparison = aTime.compareTo(bTime);
+    if (timeComparison != 0) {
+      return timeComparison;
+    }
+    
+    return compareImportance(b.importance.toString(), a.importance.toString()); 
   });
 
   return filteredTodos;
 }
+int compareImportance(String a, String b) {
+  const importanceLevels = ['สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'];
+  
+  if (importanceLevels.contains(a) && importanceLevels.contains(b)) {
+    return importanceLevels.indexOf(a) - importanceLevels.indexOf(b);
+  }
+  
+  if (importanceLevels.contains(a)) {
+    return -1;
+  }
+  
+  if (importanceLevels.contains(b)) {
+    return 1; 
+  }
+  
+  return a.compareTo(b); 
+}
+ 
 
 //fetchcurrent
   Future<String?> getDeviceId() async {

@@ -56,6 +56,13 @@ Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
       }
     }
   }
+
+  filteredTodos.sort((a, b) {
+    final aTime = DateFormat("HH:mm").parse(a.startTime.toString());
+    final bTime = DateFormat("HH:mm").parse(b.startTime.toString());
+    return aTime.compareTo(bTime);
+  });
+
   return filteredTodos;
 }
 

@@ -47,7 +47,8 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
   String _getRemainingTimeText(
       String startDateTime, String title, int? notifyBeforeStart) {
     DateTime timenow = DateTime.now();
-    String startDateTimeString = "$startDateTime ${widget.currentTask[0].startTime}";
+    String startDateTimeString =
+        "$startDateTime ${widget.currentTask[0].startTime}";
     DateTime startDateTimeObj = DateTime.parse(startDateTimeString);
     Duration difference = startDateTimeObj.difference(timenow);
     int totalMinutes = difference.inMinutes;
@@ -74,9 +75,12 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     }
   }
 
-  bool _shouldShowStartButton(DateTime startDateTime) {
+  bool _shouldShowStartButton(String startDateTime) {
     DateTime timenow = DateTime.now();
-    Duration difference = startDateTime.difference(timenow);
+    String startDateTimeString =
+        "$startDateTime ${widget.currentTask[0].startTime}";
+    DateTime startDateTimeObj = DateTime.parse(startDateTimeString);
+    Duration difference = startDateTimeObj.difference(timenow);
     int totalMinutes = difference.inMinutes;
     return totalMinutes <= 360;
   }
@@ -172,13 +176,6 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
             const SizedBox(height: 8),
             Text(
               (() {
-                DateTime startDateTime = DateTime(
-                  now.year,
-                  now.month,
-                  now.day,
-                  int.parse(widget.currentTask[0].startTime!.split(':')[0]),
-                  int.parse(widget.currentTask[0].startTime!.split(':')[1]),
-                );
                 return _getRemainingTimeText(
                   widget.currentTask[0].startDate.toString(),
                   widget.currentTask[0].title.toString(),
@@ -191,13 +188,8 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                if (_shouldShowStartButton(DateTime(
-                      now.year,
-                      now.month,
-                      now.day,
-                      int.parse(widget.currentTask[0].startTime!.split(':')[0]),
-                      int.parse(widget.currentTask[0].startTime!.split(':')[1]),
-                    )) &&
+                if (_shouldShowStartButton(
+                        widget.currentTask[0].startDate.toString()) &&
                     widget.currentTask[0].status != 'working')
                   ElevatedButton(
                     onPressed: () async {

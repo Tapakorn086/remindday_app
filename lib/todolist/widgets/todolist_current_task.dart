@@ -49,6 +49,8 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     DateTime timenow = DateTime.now();
     Duration difference = startDateTime.difference(timenow);
     int totalMinutes = difference.inMinutes;
+    debugPrint("check totalMinyes: $totalMinutes");
+    debugPrint("check difference: $difference");
 
     if (totalMinutes > 360) {
       return "ยังไม่ถึงเวลาเริ่มงาน";
@@ -135,7 +137,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     );
   }
 
-    Widget _buildCurrentTaskCard() {
+  Widget _buildCurrentTaskCard() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(

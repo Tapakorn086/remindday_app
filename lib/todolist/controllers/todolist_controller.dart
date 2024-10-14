@@ -50,42 +50,45 @@ class RemindDayListController {
     }
   }
 
-  Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
-    final now = DateTime.now();
-    final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+Future<List<Todo>> fetchCurrentTodo(List<Todo> data) async {
+  final now = DateTime.now();
+  final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
-    List<Todo> filteredTodos = [];
+  List<Todo> filteredTodos = [];
 
-    for (var todo in data) {
-      if (todo.status?.toLowerCase() == 'pending' ||
-          todo.status?.toLowerCase() == 'working') {
-        final startDateTime =
-            dateFormat.parse("${todo.startDate} ${todo.startTime}");
-        final differenceInHours = startDateTime.difference(now).inHours;
+  for (var todo in data) {
+    if (todo.status?.toLowerCase() == 'pending' ||
+        todo.status?.toLowerCase() == 'working') {
+      final startDateTime =
+          dateFormat.parse("${todo.startDate} ${todo.startTime}");
+      final differenceInHours = startDateTime.difference(now).inHours;
 
-        if (differenceInHours <= 6 && differenceInHours >= 0) {
-          filteredTodos.add(todo);
-        }
+      if (differenceInHours <= 6 && differenceInHours >= 0) {
+        filteredTodos.add(todo);
       }
     }
-
-    filteredTodos.sort((a, b) {
-      final aTime = DateFormat("HH:mm").parse(a.startTime ?? "");
-      final bTime = DateFormat("HH:mm").parse(b.startTime ?? "");
-
-      int timeComparison = aTime.compareTo(bTime);
-      if (timeComparison != 0) {
-        return timeComparison;
-      }
-
-      return compareImportance(b.importance ?? "", a.importance ?? "");
-    });
-    for (var todo in filteredTodos) {
-      debugPrint("Todo item '${todo.title}' importance ${todo.importance}");
-    }
-
-    return filteredTodos;
   }
+
+  filteredTodos.sort((a, b) {
+    final aTime = DateFormat("HH:mm").parse(a.startTime ?? "");
+    final bTime = DateFormat("HH:mm").parse(b.startTime ?? "");
+
+    int timeComparison = aTime.compareTo(bTime);
+    if (timeComparison != 0) {
+      return timeComparison;
+    }
+
+    return compareImportance(b.importance ?? "", a.importance ?? "");
+  });
+
+  if (filteredTodos.isNotEmpty) {
+    Todo firstTodo = filteredTodos[0];
+    debugPrint("Todo item '${firstTodo.title}' importance ${firstTodo.importance}");
+    return [firstTodo];
+  } else {
+    return [];
+  }
+}
 
   int compareImportance(String a, String b) {
     const importanceLevels = ['สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'];

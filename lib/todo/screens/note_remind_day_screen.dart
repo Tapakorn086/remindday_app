@@ -28,6 +28,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
   DateTime? _selectedStartDate;
 
   bool _autoValidate = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -60,23 +61,25 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
         backgroundColor: const Color(0xFFE6E6FA),
         elevation: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE6E6FA), Colors.white],
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFE6E6FA), Colors.white],
+              ),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  key: _formKey,
+                  autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
                   CustomTextField(
                     label: 'ชื่องาน',
                     controller: _titleController,
@@ -190,24 +193,42 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 32),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                   const SizedBox(height: 32),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.deepPurple,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: _isLoading ? null : _submitForm,
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('เพิ่มข้อมูล', style: TextStyle(fontSize: 18)),
                       ),
-                    ),
-                    onPressed: _submitForm,
-                    child: const Text('เพิ่มข้อมูล', style: TextStyle(fontSize: 18)),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -222,6 +243,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
   void _submitForm() async {
     setState(() {
       _autoValidate = true;
+      _isLoading = true;
     });
     
     if (_formKey.currentState!.validate()) {
@@ -244,6 +266,10 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
 
       await _todoController.addTodo(newTodo);
 
+      setState(() {
+        _isLoading = false;
+      });
+
       if (mounted) { 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -258,6 +284,10 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
 
         Navigator.of(context).pop(true);
       }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

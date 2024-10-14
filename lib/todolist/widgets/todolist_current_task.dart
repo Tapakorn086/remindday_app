@@ -45,10 +45,15 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
   }
 
   String _getRemainingTimeText(
-      DateTime startDateTime, String title, int? notifyBeforeStart) {
+      String startDateTime, String title, int? notifyBeforeStart) {
     DateTime timenow = DateTime.now();
-    Duration difference = startDateTime.difference(timenow);
+    String startDateTimeString = "$startDateTime ${widget.currentTask[0].startTime}";
+    DateTime startDateTimeObj = DateTime.parse(startDateTimeString);
+    Duration difference = startDateTimeObj.difference(timenow);
     int totalMinutes = difference.inMinutes;
+
+    debugPrint("check startDateTimeObj: $startDateTimeObj");
+    debugPrint("check timenow: $timenow");
     debugPrint("check totalMinyes: $totalMinutes");
     debugPrint("check difference: $difference");
 
@@ -175,7 +180,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
                   int.parse(widget.currentTask[0].startTime!.split(':')[1]),
                 );
                 return _getRemainingTimeText(
-                  startDateTime,
+                  widget.currentTask[0].startDate.toString(),
                   widget.currentTask[0].title.toString(),
                   widget.currentTask[0].notifyMinutesBefore,
                 );

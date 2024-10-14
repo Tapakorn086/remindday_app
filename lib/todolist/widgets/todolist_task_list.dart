@@ -72,63 +72,70 @@ class _TaskListWidgetState extends State<TaskListWidget> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 80, // ปรับความสูงตามความเหมาะสม
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                bottomLeft: Radius.circular(8),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 8,
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
               ),
             ),
-          ),
-          Checkbox(
-            value: todo.status == 'completed',
-            onChanged: (bool? value) {
-              setState(() {
-                todo.status = value! ? 'completed' : 'pending';
-              });
-              widget.onTodoStatusChanged(todo);
-              _sortAndSeparateTodos();
-            },
-          ),
-          _buildTimeWidget(todo.startTime),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              child: Row(
                 children: [
-                  Text(
-                    todo.title ?? 'No Title',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: todo.status == 'completed'
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
+                  Checkbox(
+                    value: todo.status == 'completed',
+                    onChanged: (bool? value) {
+                      setState(() {
+                        todo.status = value! ? 'completed' : 'pending';
+                      });
+                      widget.onTodoStatusChanged(todo);
+                      _sortAndSeparateTodos();
+                    },
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    todo.description ?? 'No Description',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      decoration: todo.status == 'completed'
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
+                  _buildTimeWidget(todo.startTime),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            todo.title ?? 'No Title',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              decoration: todo.status == 'completed'
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            todo.description ?? 'No Description',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                              decoration: todo.status == 'completed'
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

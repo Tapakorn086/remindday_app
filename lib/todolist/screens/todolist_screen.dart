@@ -119,7 +119,7 @@ class _TodoDayListScreenState extends State<TodoDayListScreen> {
     return Scaffold(
       appBar: AppBar(
         title:
-            const Text('RemindDay List', style: TextStyle(color: Colors.black)),
+            const Text('RemindDay App', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),

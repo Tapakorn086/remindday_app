@@ -171,23 +171,24 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    setState(()  {
-                      widget.currentTask[0].status = "working";
-                    });
-                    await _controller.updateTodoStatus(widget.currentTask[0]);
-                    widget.refreshTodos();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                if (widget.currentTask[0].status != 'working')
+                  ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        widget.currentTask[0].status = "working";
+                      });
+                      await _controller.updateTodoStatus(widget.currentTask[0]);
+                      widget.refreshTodos();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
+                    child: const Text('เริ่มทำงาน',
+                        style: TextStyle(color: Colors.white)),
                   ),
-                  child: const Text('เริ่มทำงาน',
-                      style: TextStyle(color: Colors.white)),
-                ),
                 ElevatedButton(
                   onPressed: () async {
                     setState(() {

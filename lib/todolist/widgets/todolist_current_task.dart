@@ -55,19 +55,22 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     return "${twoDigits(duration.inHours)}:$twoDigitMinutes";
   }
 
-  String _getRemainingTimeText(DateTime startDateTime, DateTime now, String title) {
-    Duration difference = startDateTime.difference(now);
-    String formattedStartTime = "${startDateTime.hour.toString().padLeft(2, '0')}:${startDateTime.minute.toString().padLeft(2, '0')}";
-    String formattedCurrentTime = "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-    
-    if (difference.isNegative) {
-      return 'เลยกำหนดการมา ${_formatTime(difference.abs())} (งาน "$title" เริ่มเวลา $formattedStartTime - ขณะนี้ $formattedCurrentTime)';
-    } else if (difference.inHours > 6) {
-      return 'ยังไม่มีงานใกล้เริ่ม (งาน "$title" เริ่มเวลา $formattedStartTime)';
-    } else if (difference.inHours <= 4) {
-      return 'อีก ${_formatTime(difference)} งาน "$title" จะเริ่ม ($formattedStartTime - ขณะนี้ $formattedCurrentTime)';
+  String _getRemainingTimeText(DateTime startDateTime, DateTime now,
+      String title, int? notifyBeforeStart) {
+    DateTime timenow = DateTime.now();
+    Duration difference = startDateTime.difference(timenow);
+    int hours = difference.inHours;
+    int minutes = difference.inMinutes.remainder(60);
+    int totalMinutes = hours * 60 + minutes;
+
+    if (totalMinutes > 360) {
+      return "ยังไม่มีงานที่ต้องทำ $totalMinutes";
+    } else if (totalMinutes <= 6 && totalMinutes > 0) {
+      return "งาน $title จะเริ่มในอีก $totalMinutes";
+    } else if (totalMinutes <= notifyBeforeStart! && totalMinutes>0) {
+      return "ใกล้จะถึงเวลาทำงาน $title";
     } else {
-      return 'เหลือ ${_formatTime(difference)} ก่อนเริ่มงาน "$title" ($formattedStartTime - ขณะนี้ $formattedCurrentTime)';
+      return "งาน [ $title ] เลยกำหนดการมาแล้วนะ";
     }
   }
 
@@ -75,7 +78,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     setState(() {
       todo.status = newStatus;
     });
-    
+
     try {
       await _todoService.updateTodoStatus(todo, _deviceId);
     } catch (e) {
@@ -96,7 +99,8 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     debugPrint("Current Time: ${now.toString()}");
 
     for (var todo in widget.currentTask) {
-      debugPrint("Current Task: ${todo.title}, Status: ${todo.status}, Start Date: ${todo.startDate}, Start Time: ${todo.startTime}, notifyBeforeStart: ${todo.notifyMinutesBefore}");
+      debugPrint(
+          "Current Task: ${todo.title}, Status: ${todo.status}, Start Date: ${todo.startDate}, Start Time: ${todo.startTime}, Notify Before: ${todo.notifyMinutesBefore}");
     }
 
     return Column(
@@ -116,7 +120,8 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
                   children: [
                     const Text(
                       'ไม่มีงานปัจจุบัน',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
@@ -146,14 +151,17 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
                   int.parse(todo.startTime!.split(':')[0]),
                   int.parse(todo.startTime!.split(':')[1]),
                 );
-                
-                String remainingTime = _getRemainingTimeText(startDateTime, now, todo.title.toString());
+
+                String remainingTime = _getRemainingTimeText(startDateTime, now,
+                    todo.title.toString(), todo.notifyMinutesBefore);
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: startDateTime.isBefore(now) ? Colors.red[100] : Colors.yellow[100],
+                      color: startDateTime.isBefore(now)
+                          ? Colors.red[100]
+                          : Colors.yellow[100],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -161,11 +169,17 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          startDateTime.isBefore(now) ? 'เลยกำหนดการ' : todo.status == 'working' ? 'กำลังทำอยู่' : 'กำลังรอเริ่ม',
+                          startDateTime.isBefore(now)
+                              ? 'เลยกำหนดการ'
+                              : todo.status == 'working'
+                                  ? 'กำลังทำอยู่'
+                                  : 'กำลังรอเริ่ม',
                           style: TextStyle(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
-                            color: startDateTime.isBefore(now) ? Colors.red : Colors.black,
+                            color: startDateTime.isBefore(now)
+                                ? Colors.red
+                                : Colors.black,
                           ),
                         ),
                         const SizedBox(height: 8),

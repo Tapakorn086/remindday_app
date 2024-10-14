@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:remindday_app/calendar/screens/calendar_screen.dart';
-import 'package:remindday_app/todolist/notifiers/todo_notifier.dart';
 import 'login/services/auth_service.dart';
 import 'todolist/screens/todolist_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -14,14 +12,9 @@ import 'package:intl/date_symbol_data_local.dart';
 //     );
 // }
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // เพิ่มบรรทัดนี้
+  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('th', null);
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => TodoNotifier(),
-      child: MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

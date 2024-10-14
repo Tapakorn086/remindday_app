@@ -44,6 +44,12 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
     super.dispose();
   }
 
+  String _truncateText(String text, int maxLength) {
+    return text.length > maxLength
+        ? '${text.substring(0, maxLength)}...'
+        : text;
+  }
+
   String _getRemainingTimeText(
       String startDateTime, String title, int? notifyBeforeStart) {
     DateTime timenow = DateTime.now();
@@ -69,7 +75,7 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
         return "งาน $title จะเริ่มในอีก 1 ชั่วโมง";
       }
     } else if (totalMinutes <= notifyBeforeStart! && totalMinutes > 0) {
-      return "ใกล้จะถึงเวลาทำงาน $title จะเริ่มในอีก $totalMinutes นาที";
+      return "ใกล้จะถึงเวลาทำงาน ${_truncateText(title,25)} จะเริ่มในอีก $totalMinutes นาที";
     } else {
       return "งาน [ $title ] เลยกำหนดการมาแล้ว";
     }
@@ -167,11 +173,13 @@ class _CurrentTaskWidgetState extends State<CurrentTaskWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.currentTask[0].title.toString(),
+              _truncateText(
+                  widget.currentTask[0].title?.toString() ?? 'No Title', 25),
               style: const TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple),
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8),
             Text(

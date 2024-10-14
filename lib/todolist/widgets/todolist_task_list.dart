@@ -40,9 +40,11 @@ class _TaskListWidgetState extends State<TaskListWidget> {
     setState(() {
       List<Todo> sortedTodos = List.from(widget.todos)
         ..sort((a, b) => (a.startTime ?? '').compareTo(b.startTime ?? ''));
-      
-      incompleteTodos = sortedTodos.where((todo) => todo.status != 'completed').toList();
-      completedTodos = sortedTodos.where((todo) => todo.status == 'completed').toList();
+
+      incompleteTodos =
+          sortedTodos.where((todo) => todo.status != 'completed').toList();
+      completedTodos =
+          sortedTodos.where((todo) => todo.status == 'completed').toList();
     });
   }
 
@@ -52,7 +54,8 @@ class _TaskListWidgetState extends State<TaskListWidget> {
       child: ListView(
         children: [
           ...incompleteTodos.map(_buildTaskItem),
-          if (completedTodos.isNotEmpty) const Divider(height: 30, thickness: 2),
+          if (completedTodos.isNotEmpty)
+            const Divider(height: 30, thickness: 2),
           ...completedTodos.map(_buildTaskItem),
         ],
       ),
@@ -61,85 +64,129 @@ class _TaskListWidgetState extends State<TaskListWidget> {
 
   Widget _buildTaskItem(Todo todo) {
     Color backgroundColor = _getBackgroundColor(todo.importance);
+    bool isWorking = todo.status == 'working';
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              width: 8,
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                ),
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: isWorking ? Border.all(color: Colors.blue, width: 2) : null,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(0, 1),
               ),
-            ),
-            Expanded(
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: todo.status == 'completed',
-                    onChanged: (bool? value) async {
-                      todo.status = value! ? 'completed' : 'pending';
-                      await widget.onTodoStatusChanged(todo);
-                      widget.refreshTodos();
-                    },
-                  ),
-                  _buildTimeWidget(todo.startTime),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            todo.title ?? 'No Title',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              decoration: todo.status == 'completed'
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            todo.description ?? 'No Description',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                              decoration: todo.status == 'completed'
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                            ),
-                          ),
-                        ],
-                      ),
+            ],
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: 8,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(6),
+                      bottomLeft: Radius.circular(6),
                     ),
                   ),
-                ],
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: todo.status == 'completed',
+                        onChanged: (bool? value) async {
+                          todo.status = value! ? 'completed' : 'pending';
+                          await widget.onTodoStatusChanged(todo);
+                          widget.refreshTodos();
+                        },
+                      ),
+                      _buildTimeWidget(todo.startTime),
+                      
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _truncateText(todo.title ?? 'No Title', 25),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: todo.status == 'completed'
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (isWorking)
+                                    const Icon(Icons.work,
+                                        color: Colors.blue, size: 20),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _truncateText(todo.description ?? 'No Description', 50),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                        decoration: todo.status == 'completed'
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (isWorking)
+          Positioned(
+            top: 0,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'กำลังทำงานอยู่',
+                style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
+  }
+
+  String _truncateText(String text, int maxLength) {
+    return text.length > maxLength ? '${text.substring(0, maxLength)}...' : text;
   }
 
   Color _getBackgroundColor(String? importance) {

@@ -31,6 +31,18 @@ class RemindDayListController {
       {required String deviceId, required DateTime date}) async {
     try {
       final data = await _todoService.fetchTodos(deviceId, date);
+
+      data.sort((a, b) {
+        final aTime = DateFormat("HH:mm").parse(a.startTime ?? "");
+        final bTime = DateFormat("HH:mm").parse(b.startTime ?? "");
+
+        int timeComparison = aTime.compareTo(bTime);
+        if (timeComparison != 0) {
+          return timeComparison;
+        }
+
+        return compareImportance(b.importance ?? "", a.importance ?? "");
+      });
       return data;
     } catch (e) {
       debugPrint('Error fetching todos: $e');
@@ -52,8 +64,6 @@ class RemindDayListController {
         final differenceInHours = startDateTime.difference(now).inHours;
 
         if (differenceInHours <= 6 && differenceInHours >= 0) {
-          // debugPrint(
-          //     "Todo item '${todo.title}' importance ${todo.importance}");
           filteredTodos.add(todo);
         }
       }

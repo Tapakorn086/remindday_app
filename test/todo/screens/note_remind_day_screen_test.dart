@@ -44,6 +44,29 @@ void main() {
     expect(find.text('กรุณาเลือกข้อมูล'), findsNWidgets(3));
   });
 
+  testWidgets('NoteRemindDayScreen Date Picker Test',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: NoteRemindDayScreen(selectedDate: DateTime(2024, 10, 15)),
+      ),
+    );
+
+    expect(find.text('15/10/2024'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.calendar_today));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DatePickerDialog), findsOneWidget);
+
+    await tester.tap(find.text('20'));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    // ตรวจสอบว่าวันที่ถูกอัปเดตในฟอร์ม
+    expect(find.text('20/10/2024'), findsOneWidget);
+  });
+
   testWidgets('NoteRemindDayScreen Form Submission Test',
       (WidgetTester tester) async {
     when(mockTodoController.getidDevice())

@@ -81,6 +81,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                   CustomTextField(
+                    key: const Key("title_field"),
                     label: 'ชื่องาน',
                     controller: _titleController,
                     icon: Icons.title,
@@ -93,6 +94,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                   ),
                   const SizedBox(height: 20),
                   CustomTextField(
+                    key: const Key("description_field"),
                     label: 'เพิ่มรายละเอียด',
                     controller: _descriptionController,
                     maxLines: 3,
@@ -103,6 +105,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     children: [
                       Expanded(
                         child: CustomDropdown(
+                          key: const Key("type_dropdown"),
                           label: 'ประเภท',
                           items: const ['เลือกประเภท', 'เรียน', 'งาน', 'อื่นๆ'],
                           value: _selectedType,
@@ -118,6 +121,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                       const SizedBox(width: 20),
                       Expanded(
                         child: CustomDropdown(
+                          key: const Key("importance_dropdown"),
                           label: 'ระดับความสำคัญ',
                           items: const ['เลือกระดับความสำคัญ', 'สำคัญมาก', 'สำคัญปานกลาง', 'สำคัญน้อย'],
                           value: _selectedImportance,
@@ -137,6 +141,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                     children: [
                       Expanded(
                         child: CustomDropdown(
+                          key: const Key("start_time_dropdown"),
                           label: 'เวลาที่ต้องการให้แจ้งเตือน',
                           items: ['เลือกเวลาแจ้งเตือน', ..._generateTimeList()],
                           value: _selectedStartTime,
@@ -152,6 +157,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                       const SizedBox(width: 20),
                       Expanded(
                         child: CustomDropdown(
+                          key: const Key("notify_minutes_dropdown"),
                           label: 'เวลาเตือนก่อนกิจกรรมเริ่ม',
                           items: const ['เลือกเวลาเตือนก่อนกิจกรรม', '5 นาที', '10 นาที', '15 นาที', '30 นาที', '1 ชั่วโมง'],
                           value: _selectedNotifyMinutes,
@@ -195,6 +201,7 @@ class _NoteRemindDayScreenState extends State<NoteRemindDayScreen> {
                   ),
                    const SizedBox(height: 32),
                       ElevatedButton(
+                        key: const Key("submitForm"),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.deepPurple,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:remindday_app/todolist/widgets/todolist_detail_task.dart';
 import '../models/todolist_model.dart';
 
 class TaskListWidget extends StatefulWidget {
@@ -66,127 +67,143 @@ class _TaskListWidgetState extends State<TaskListWidget> {
     Color backgroundColor = _getBackgroundColor(todo.importance);
     bool isWorking = todo.status == 'working';
 
-    return Stack(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: isWorking ? Border.all(color: Colors.blue, width: 2) : null,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TodoDetailScreen(todo: todo),
           ),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 8,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(6),
-                      bottomLeft: Radius.circular(6),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: todo.status == 'completed',
-                        onChanged: (bool? value) async {
-                          todo.status = value! ? 'completed' : 'pending';
-                          await widget.onTodoStatusChanged(todo);
-                          widget.refreshTodos();
-                        },
-                      ),
-                      _buildTimeWidget(todo.startTime),
-                      
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      _truncateText(todo.title ?? 'No Title', 25),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        decoration: todo.status == 'completed'
-                                            ? TextDecoration.lineThrough
-                                            : TextDecoration.none,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  if (isWorking)
-                                    const Icon(Icons.work,
-                                        color: Colors.blue, size: 20),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      _truncateText(todo.description ?? 'No Description', 50),
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                        decoration: todo.status == 'completed'
-                                            ? TextDecoration.lineThrough
-                                            : TextDecoration.none,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+        );
+      },
+      child: Stack(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border:
+                  isWorking ? Border.all(color: Colors.blue, width: 2) : null,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
-          ),
-        ),
-        if (isWorking)
-          Positioned(
-            top: 0,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'กำลังทำงานอยู่',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: 8,
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(6),
+                        bottomLeft: Radius.circular(6),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: todo.status == 'completed',
+                          onChanged: (bool? value) async {
+                            todo.status = value! ? 'completed' : 'pending';
+                            await widget.onTodoStatusChanged(todo);
+                            widget.refreshTodos();
+                          },
+                        ),
+                        _buildTimeWidget(todo.startTime),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _truncateText(
+                                            todo.title ?? 'No Title', 25),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: todo.status == 'completed'
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (isWorking)
+                                      const Icon(Icons.work,
+                                          color: Colors.blue, size: 20),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _truncateText(
+                                            todo.description ??
+                                                'No Description',
+                                            50),
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                          decoration: todo.status == 'completed'
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-      ],
+          if (isWorking)
+            Positioned(
+              top: 0,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'กำลังทำงานอยู่',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
   String _truncateText(String text, int maxLength) {
-    return text.length > maxLength ? '${text.substring(0, maxLength)}...' : text;
+    return text.length > maxLength
+        ? '${text.substring(0, maxLength)}...'
+        : text;
   }
 
   Color _getBackgroundColor(String? importance) {

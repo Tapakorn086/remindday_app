@@ -14,7 +14,7 @@ class TodoDetailScreen extends StatelessWidget {
           todo.title ?? 'No Title',
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: _getBackgroundColor(todo.importance),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -152,12 +152,24 @@ class TodoDetailScreen extends StatelessWidget {
     switch (status) {
       case 'Pending':
         return 'ยังไม่ถึงเวลาเริ่มงาน';
-      case 'Working':
+      case 'working':
         return 'กำลังทำงานนี้อยู่';
       case 'completed':
         return 'งานนี้เสร็จแล้ว';
       default:
         return 'สถานะไม่รู้จัก';
+    }
+  }
+    Color _getBackgroundColor(String? importance) {
+    switch (importance?.toLowerCase()) {
+      case 'สำคัญมาก':
+        return Colors.red[100]!;
+      case 'สำคัญปานกลาง':
+        return Colors.yellow[100]!;
+      case 'สำคัญน้อย':
+        return Colors.green[100]!;
+      default:
+        return Colors.grey[200]!;
     }
   }
 }

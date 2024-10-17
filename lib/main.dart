@@ -3,14 +3,6 @@ import 'package:remindday_app/calendar/screens/calendar_screen.dart';
 import 'login/services/auth_service.dart';
 import 'todolist/screens/todolist_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
-// void main()async {
-//     await initializeDateFormatting('th', null);
-//   ChangeNotifierProvider(
-//       create: (_) => TodoNotifier(),
-//       child: MyApp(),
-//     );
-// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('th', null);

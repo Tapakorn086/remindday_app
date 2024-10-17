@@ -130,7 +130,7 @@ class TodoDetailScreen extends StatelessWidget {
             if (todo.status == 'working')
               const Row(
                 children: [
-                  const Icon(Icons.work, color: Colors.blueAccent),
+                   Icon(Icons.work, color: Colors.blueAccent),
                   SizedBox(width: 8),
                   Text(
                     'กำลังทำงานนี้อยู่',
